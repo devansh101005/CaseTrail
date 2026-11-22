@@ -1,0 +1,25 @@
+# Minimal packaging so `pip install -e .` makes `import casetrail` work from scripts/, tests/ and api/.
+# Dependencies are listed in requirements.txt.
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "casetrail"
+version = "0.1.0"
+description = "Precedent and statute retrieval for Indian court judgments (CSD358 IR project)"
+requires-python = ">=3.10"
+license = "MIT"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "."]
+
+# Lets the editor's type checker (Pylance/Pyright) find the venv and the src/ package
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+extraPaths = ["src", "."]

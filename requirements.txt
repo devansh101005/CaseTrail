@@ -1,0 +1,33 @@
+# CaseTrail dependencies (Python 3.10-3.13).
+# Install:  python -m pip install -r requirements.txt
+#
+# PyTorch note: on Windows the PyPI torch wheel is already CPU-only, which is what the laptop needs.
+# On Linux/Mac, install the CPU build first so pip does not pull the large CUDA wheel:
+#   python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
+# GPU training runs on Kaggle (CUDA torch is preinstalled there).
+
+# Core numeric + data loading (IL-TUR is stored as parquet on Hugging Face)
+numpy>=2.1
+pandas>=2.2
+pyarrow>=18.0
+huggingface_hub>=0.30
+
+# Neural models (bi-encoder, cross-attention) and CPU inference
+torch>=2.6
+transformers>=4.50
+onnx>=1.17
+onnxruntime>=1.20
+
+# Demo backend
+fastapi>=0.115
+uvicorn>=0.32
+
+# Plots for the report
+matplotlib>=3.9
+
+# Tests. The three libraries below are used ONLY in tests/ as reference checks for our own code,
+# never in the pipeline (CLAUDE.md rule 4).
+pytest>=8.3
+rank_bm25>=0.2.2
+scikit-learn==1.7.2
+networkx>=3.4

@@ -1,0 +1,69 @@
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.ipynb_checkpoints/
+*.egg-info/
+build/
+dist/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# ---------- Large / downloaded / generated artifacts (never commit; rebuilt by scripts/) ----------
+data/
+models/
+indexes/
+*.onnx
+*.pt
+*.pth
+*.bin
+*.safetensors
+*.ckpt
+*.pkl
+*.npy
+*.npz
+*.parquet
+*.arrow
+# results/ (small CSV/JSON/PNG) is NOT ignored: commit it.
+
+# Zips: Kaggle code bundle, Kaggle outputs, the submission ZIP (all regenerated, some large)
+*.zip
+
+# ---------- Frontend ----------
+frontend/node_modules/
+frontend/.next/
+frontend/out/
+frontend/next-env.d.ts
+frontend/*.tsbuildinfo
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# ---------- Secrets and credentials (never commit) ----------
+.env
+.env.*
+!.env.example
+kaggle.json
+.kaggle/
+*token*.txt
+.huggingface/
+
+# ---------- Logs ----------
+*.log
+
+# ---------- OS / editors ----------
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# ---------- Tool state ----------
+.playwright-mcp/
+# Claude Code local state (scheduler lock files, local settings)
+.claude/
