@@ -3,7 +3,7 @@
 CSD358_Devansh_Anamika_Abhinav/
   report/CaseTrail_report.pdf
   GITHUB_LINK.txt
-  code/       git archive of HEAD (only committed files: no data, models, tokens or node_modules)
+  code/       the needed part of the last commit (code, scripts, tests, notebooks, results; no data or models)
   dataset/    how to get IL-TUR + the exact split ids (the IL-TUR files themselves are not redistributed)
   README.txt
 """
@@ -19,6 +19,13 @@ from casetrail import config
 from casetrail.data import parquet_path
 
 TOP = "CSD358_Devansh_Anamika_Abhinav"
+# Only what is needed to run and check the project; planning and design notes stay on GitHub
+CODE_FOLDERS = ["src/", "api/", "frontend/", "scripts/", "tests/", "notebooks/", "results/"]
+CODE_FILES = ["README.md", "LICENSE", "requirements.txt", "pyproject.toml", "docs/DATA.md"]
+
+
+def wanted(path: str) -> bool:
+    return path in CODE_FILES or any(path.startswith(folder) for folder in CODE_FOLDERS)
 
 
 def git(*args) -> str:
@@ -59,22 +66,25 @@ Devansh Pandey (2310110461), Anamika Pal (2310110037), Abhinav Bachchas (2310110
 
 report/CaseTrail_report.pdf   the project report
 GITHUB_LINK.txt               link to the repository
-code/                         the source code (snapshot of commit {commit})
+code/                         the source code, scripts, tests, notebooks and results (commit {commit})
 dataset/                      how to download IL-TUR, and the ids of every split we used
 
 To run: open code/README.md. It explains setup, how to rebuild every result from scratch, and how
-to start the demo (FastAPI backend + Next.js frontend).
+to start the demo (FastAPI backend + Next.js frontend). The design notes and decision log mentioned
+in the README are in the GitHub repository.
 """
 
 
 def add_code(out: zipfile.ZipFile):
     archive = subprocess.run(["git", "archive", "--format=zip", "HEAD"], cwd=config.PROJECT_ROOT,
                              capture_output=True, check=True).stdout
+    count = 0
     with zipfile.ZipFile(io.BytesIO(archive)) as code:
         for item in code.infolist():
-            if not item.is_dir():
+            if not item.is_dir() and wanted(item.filename):
                 out.writestr(f"{TOP}/code/{item.filename}", code.read(item))
-    return len(code.infolist())
+                count += 1
+    return count
 
 
 def main():
