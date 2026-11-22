@@ -71,9 +71,72 @@ def test_one_teacher_epoch_and_scoring(tmp_path):
     optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)
     examples = teacher_examples(items, random.Random(13))
     assert sorted(label for q, d, label in examples) == [0.0, 0.0, 1.0, 1.0]
-    loss = train_teacher_epoch(model, tokenizer, optimizer, examples, chunks, {"seed": 13, "batch_size": 2},
+    loss = train_teacher_epoch(model, tokenizer, optimizer, examples, chunks, {"seed": 13, "batch_size": 2, "lr": 1e-3},
                                torch.device("cpu"))
     assert loss > 0
     scores = score_pairs(model, tokenizer, [("q1", "p1"), ("q1", "n1")], chunks, torch.device("cpu"))
     assert len(scores) == 2
     assert scores == score_pairs(model, tokenizer, [("q1", "p1"), ("q1", "n1")], chunks, torch.device("cpu"))
+
+
+def test_selected_pairs_take_the_most_similar_chunks():
+    import numpy as np
+    from casetrail.neural.distill import SELECTED_PAIRS, selected_pairs
+    query_chunks, doc_chunks = ["q0", "q1"], ["d0", "d1", "d2"]
+    query_vectors = np.array([[1.0, 0.0], [0.0, 1.0]])
+    doc_vectors = np.array([[0.0, 1.0], [1.0, 0.0], [0.6, 0.8]])
+    pairs = selected_pairs(query_chunks, doc_chunks, query_vectors, doc_vectors)
+    assert len(pairs) == SELECTED_PAIRS
+    assert set(pairs[:2]) == {("q0", "d1"), ("q1", "d0")}   # the two cosine-1.0 pairs come first
+    one = selected_pairs(["q0"], ["d0"], np.array([[1.0, 0.0]]), np.array([[1.0, 0.0]]))
+    assert one == [("q0", "d0")] * SELECTED_PAIRS            # tiny judgments: the pair is repeated
+
+
+def test_warmup_raises_the_learning_rate_linearly():
+    from casetrail.neural.distill import set_learning_rate
+    optimizer = torch.optim.SGD([torch.nn.Parameter(torch.zeros(1))], lr=1.0)
+    settings = {"lr": 2e-5, "warmup_steps": 10}
+    set_learning_rate(optimizer, settings, 5)
+    assert abs(optimizer.param_groups[0]["lr"] - 1e-5) < 1e-12
+    set_learning_rate(optimizer, settings, 50)
+    assert optimizer.param_groups[0]["lr"] == 2e-5
+
+
+def test_teacher_with_selected_pairs_and_dev_check(tmp_path):
+    import numpy as np
+    from casetrail.neural.distill import dev_pair_accuracy
+    torch.manual_seed(13)
+    chunks, items, relevant = toy_data()
+    vectors = {name: np.random.default_rng(i).normal(size=(3, 4)) for i, name in enumerate(sorted(chunks))}
+    model, tokenizer = BertForSequenceClassification(tiny_config()), tiny_tokenizer(tmp_path)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)
+    examples = teacher_examples(items, random.Random(13))
+    settings = {"seed": 13, "batch_size": 2, "lr": 1e-3, "warmup_steps": 1}
+    loss = train_teacher_epoch(model, tokenizer, optimizer, examples, chunks, settings, torch.device("cpu"), vectors)
+    assert loss > 0
+    accuracy = dev_pair_accuracy(model, tokenizer, {"q1": {"p1"}}, {"q1": ["p1", "n1", "n2"]}, chunks,
+                                 torch.device("cpu"), vectors)
+    assert 0.0 <= accuracy <= 1.0
+
+
+def test_matching_chunks_pick_the_candidate_parts_that_match_the_query():
+    import numpy as np
+    from casetrail.neural.train_retriever import matching_chunks
+    query_vectors = np.array([[1.0, 0.0]])
+    doc_vectors = np.array([[0.0, 1.0], [1.0, 0.0], [0.8, 0.6]])
+    assert matching_chunks(query_vectors, doc_vectors, 2) == [1, 2]
+    assert matching_chunks(query_vectors, doc_vectors[:1], 3) == [0, 0, 0]
+
+
+def test_student_epoch_with_selection(tmp_path):
+    import numpy as np
+    torch.manual_seed(13)
+    chunks, items, relevant = toy_data()
+    selection = {name: np.random.default_rng(i).normal(size=(3, 4)) for i, name in enumerate(sorted(chunks))}
+    model, tokenizer = BertModel(tiny_config()), tiny_tokenizer(tmp_path)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)
+    examples = make_examples(items, 2, random.Random(13))
+    data = {"chunks": chunks, "relevant": relevant, "teacher": None, "selection": selection}
+    loss = train_epoch(model, tokenizer, optimizer, examples, data, {"seed": 13, "batch_size": 2, "distill_weight": 1.0},
+                       torch.device("cpu"))
+    assert loss > 0

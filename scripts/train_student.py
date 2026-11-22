@@ -15,7 +15,7 @@ from transformers import AutoModel, AutoTokenizer
 
 from casetrail import config
 from casetrail.eval.metrics import best_k
-from casetrail.neural.train_retriever import dense_dev_run, make_examples, train_epoch
+from casetrail.neural.train_retriever import chunk_vectors, dense_dev_run, make_examples, train_epoch
 
 TRAIN_DIR = config.DATA_DIR / "training"
 
@@ -28,12 +28,12 @@ def load_json(name: str):
         return json.load(f)
 
 
-def load_inputs(distill: bool, smoke: bool = False) -> dict:
+def load_inputs(distill: bool, smoke: bool = False, teacher_file: str = "teacher_scores.json") -> dict:
     items = load_json("train_items.json")
     chunks = load_json("chunks_train.json")
     relevant = {item["query_id"]: set(item["positives"]) for item in items}
     dev_queries = load_json("dev_queries.json")
-    teacher = load_json(("smoke_" if smoke else "") + "teacher_scores.json") if distill else None
+    teacher = load_json(("smoke_" if smoke else "") + teacher_file) if distill else None
     if teacher is not None:
         items = [item for item in items if item["query_id"] in teacher]  # distil only what the teacher scored
     return {"items": items, "chunks": chunks, "relevant": relevant, "teacher": teacher,
@@ -49,6 +49,13 @@ def smoke_subset(data: dict, docs: int = 60) -> dict:
     keep |= set(sorted(data["dev_chunks"])[:docs])
     data["dev_chunks"] = {doc_id: data["dev_chunks"][doc_id][:2] for doc_id in keep}
     data["dev_qrels"] = {query_id: data["dev_qrels"][query_id] for query_id in queries}
+    # 4 training queries and only their judgments, so a selection encoder has little to embed
+    data["items"] = data["items"][:4]
+    needed = set()
+    for item in data["items"]:
+        needed.add(item["query_id"])
+        needed.update(item["positives"] + item["hard_negatives"])
+    data["chunks"] = {doc_id: data["chunks"][doc_id] for doc_id in needed if doc_id in data["chunks"]}
     return data
 
 
@@ -57,20 +64,26 @@ def main():
     parser.add_argument("--model", default="sentence-transformers/all-MiniLM-L6-v2", help="HF id or local folder")
     parser.add_argument("--variant", default="plain", help="name of the output, e.g. plain or distilled")
     parser.add_argument("--distill", action="store_true", help="add Margin-MSE to teacher scores")
+    parser.add_argument("--teacher-scores", default="teacher_scores.json",
+                        help="file in data/training/ written by train_teacher.py (e.g. teacher_scores_sel.json)")
     parser.add_argument("--epochs", type=int, default=3)
     parser.add_argument("--batch-size", type=int, default=16)
     parser.add_argument("--hard-negatives", type=int, default=4)
     parser.add_argument("--lr", type=float, default=2e-5)
     parser.add_argument("--distill-weight", type=float, default=1.0)
+    parser.add_argument("--select-with", default="", help="fixed encoder folder used to pick candidate chunks that "
+                        "match the query chunks (instead of random chunks)")
     parser.add_argument("--max-examples", type=int, default=0, help="for smoke tests only (0 = all)")
     args = parser.parse_args()
     random.seed(config.SEED)
     np.random.seed(config.SEED)
     torch.manual_seed(config.SEED)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    data = load_inputs(args.distill, smoke=bool(args.max_examples))
+    data = load_inputs(args.distill, smoke=bool(args.max_examples), teacher_file=args.teacher_scores)
     if args.max_examples:
         data = smoke_subset(data)
+    if args.select_with:
+        data["selection"] = chunk_vectors(args.select_with, [data["chunks"]], device)
     tokenizer = AutoTokenizer.from_pretrained(args.model)
     model = AutoModel.from_pretrained(args.model).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=args.lr)

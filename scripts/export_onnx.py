@@ -13,7 +13,8 @@ from casetrail import config
 from casetrail.data import load_pcr
 from casetrail.eval.results_io import metric_rows, write_rows
 from casetrail.neural.encoder import chunk_judgment, encode_texts, load_encoder
-from casetrail.neural.export_onnx import export_fp32, onnx_encode, onnx_session, quantise_int8
+from casetrail.neural.export_onnx import export_fp32, quantise_int8
+from casetrail.neural.onnx_runtime import onnx_encode, onnx_session
 
 PREFIX = {"intfloat__e5-small-v2": "query: "}
 

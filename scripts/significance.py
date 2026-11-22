@@ -31,6 +31,11 @@ PCR_PAIRS = [
     ("dense_minilm", "dense_minilm_int8"),          # what does INT8 quantisation cost?
     ("fusion_weighted_student_distilled", "bm25_bigram"),
     ("bm25_bigram+teacher_rerank", "bm25_bigram"),
+    ("bm25_bigram+teacher_rerank_sel", "bm25_bigram"),
+    ("bm25_bigram+teacher_rerank_sel", "bm25_bigram+teacher_rerank"),   # does chunk selection fix the teacher?
+    ("fusion_weighted_student_distilled_sel", "bm25_bigram"),
+    ("fusion_weighted_student_distilled_sel", "fusion_weighted_student_plain"),
+    ("fusion_weighted_student_plain", "bm25_bigram"),
 ]
 LSI_PAIRS = [("nb", "rocchio"), ("knn", "nb"), ("knn", "rocchio")]
 

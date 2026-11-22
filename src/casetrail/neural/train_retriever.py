@@ -13,6 +13,8 @@ import random
 import numpy as np
 import torch
 
+from casetrail.neural.encoder import load_encoder
+
 QUERY_CHUNKS = 4
 DOC_CHUNKS = 4
 TAU = 0.05
@@ -53,13 +55,36 @@ def make_examples(train_items: list, hard_negatives: int, rng: random.Random) ->
     return examples
 
 
-def batch_scores(model, tokenizer, batch: list, chunks: dict, device, rng: random.Random) -> tuple:
-    """MaxSim scores [B, B * (1 + H)] between the batch's queries and all candidates in the batch."""
+def sample_indices(count_available: int, count: int, rng: random.Random) -> list:
+    """`count` chunk positions of a judgment (with repetition if it has fewer)."""
+    if count_available >= count:
+        return rng.sample(range(count_available), count)
+    return [i % count_available for i in range(count)]
+
+
+def matching_chunks(query_vectors: np.ndarray, doc_vectors: np.ndarray, count: int) -> list:
+    """Positions of the `count` candidate chunks that best match the chosen query chunks (selection vectors).
+    Full MaxSim at evaluation lets every query chunk find its best candidate chunk; training on these chunks
+    copies that, where random candidate chunks would mostly miss the matching part."""
+    best_match = (query_vectors @ doc_vectors.T).max(axis=0)
+    order = np.argsort(-best_match).tolist()
+    return [order[i % len(order)] for i in range(count)]
+
+
+def batch_scores(model, tokenizer, batch: list, chunks: dict, device, rng: random.Random, selection: dict = None) -> tuple:
+    """MaxSim scores [B, B * (1 + H)] between the batch's queries and all candidates in the batch.
+    selection = {doc_id: chunk vectors from a fixed encoder}: candidate chunks are picked to match the query's
+    chunks instead of at random (query chunks stay random, so every part of the query gets trained)."""
     query_texts, doc_texts, doc_ids = [], [], []
     for query_id, positive, negatives in batch:
-        query_texts.extend(sample_chunks(chunks[query_id], QUERY_CHUNKS, rng))
+        picked = sample_indices(len(chunks[query_id]), QUERY_CHUNKS, rng)
+        query_texts.extend([chunks[query_id][i] for i in picked])
         for doc_id in [positive] + negatives:
-            doc_texts.extend(sample_chunks(chunks[doc_id], DOC_CHUNKS, rng))
+            if selection is None:
+                doc_texts.extend(sample_chunks(chunks[doc_id], DOC_CHUNKS, rng))
+            else:
+                positions = matching_chunks(selection[query_id][picked], selection[doc_id], DOC_CHUNKS)
+                doc_texts.extend([chunks[doc_id][i] for i in positions])
             doc_ids.append(doc_id)
     vectors = encode_batch(model, tokenizer, query_texts + doc_texts, device)
     dim = vectors.shape[-1]
@@ -103,7 +128,7 @@ def train_epoch(model, tokenizer, optimizer, examples: list, data: dict, setting
     for start in range(0, len(examples), settings["batch_size"]):
         batch = examples[start:start + settings["batch_size"]]
         with torch.autocast(device_type=device.type, enabled=use_amp):
-            scores, doc_ids = batch_scores(model, tokenizer, batch, data["chunks"], device, rng)
+            scores, doc_ids = batch_scores(model, tokenizer, batch, data["chunks"], device, rng, data.get("selection"))
             loss = contrastive_loss(scores.float(), batch, doc_ids, data["relevant"])
             if data.get("teacher") is not None:
                 loss = loss + settings["distill_weight"] * margin_mse_loss(scores.float(), batch, data["teacher"])
@@ -147,3 +172,25 @@ def dense_dev_run(model, tokenizer, dev_chunks: dict, dev_queries: dict, device,
         order = np.argsort(-scores)[:depth]
         run[query_id] = [names[j] for j in order]
     return run
+
+
+def chunk_vectors(encoder_dir: str, chunk_sets: list, device) -> dict:
+    """{doc_id: [n_chunks x dim] unit vectors} from a fixed encoder, used only to SELECT chunk pairs
+    (student training here, the teacher in distill.py); the model being trained is never used for this."""
+    tokenizer, model = load_encoder(encoder_dir)
+    model.to(device)
+    vectors = {}
+    for chunks in chunk_sets:
+        names = sorted(chunks)
+        texts, offsets = [], [0]
+        for name in names:
+            texts.extend(chunks[name])
+            offsets.append(len(texts))
+        encoded = encode_all(model, tokenizer, texts, device, batch_size=128)
+        for i, name in enumerate(names):
+            vectors[name] = encoded[offsets[i]:offsets[i + 1]]
+    del model
+    if device.type == "cuda":
+        torch.cuda.empty_cache()
+    print(f"  selection vectors for {len(vectors)} judgments")
+    return vectors

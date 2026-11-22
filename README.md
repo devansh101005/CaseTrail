@@ -102,6 +102,8 @@ pytest -q
 ```
 If Windows Smart App Control blocks a scikit-learn DLL, keep `scikit-learn==1.7.2` (already pinned; it is used only in tests).
 
+**Windows Smart App Control:** if a package fails with *"DLL load failed ... An Application Control policy has blocked this file"*, Windows has blocked that package's DLL. The demo is built so it does not import the packages where we have seen this happen (`onnx`, `ml_dtypes`; scikit-learn is used only in tests and pinned to 1.7.2). If it happens in a script, reinstall that package version or turn Smart App Control off in Windows Security.
+
 **Windows: clone into a short path** (for example `C:\dev\CaseTrail`). PyTorch installs files with very deep paths, and under a long folder path the install fails with *"No such file or directory … Windows Long Path support"*. The alternative is to enable long paths in Windows.
 
 ### Data access (one-time)
@@ -167,6 +169,16 @@ python scripts/eval_dense_fusion.py --model student_distilled --tag student_dist
 #   (repeat the last three commands with student_plain for the "no distillation" ablation)
 python scripts/significance.py && python scripts/make_plots.py && python scripts/update_readme.py
 ```
+**Run 2 (teacher on selected chunk pairs).** Run 1's teacher saw random chunk pairs and never got above chance. `notebooks/train_teacher_selected.ipynb` retrains it on the most similar chunk pairs, and trains two new students (plain and distilled) on candidate chunks that match the query; every output name ends in `_sel`. Upload a new version of the code dataset first, then run it the same way. Back on the laptop:
+```bash
+python scripts/eval_kaggle_runs.py      # now also evaluates teacher_rerank_sel
+python scripts/export_onnx.py --model-dir models/student_distilled_sel --tag student_distilled_sel
+python scripts/encode_corpus.py --model-dir models/student_distilled_sel --name student_distilled_sel --onnx models/onnx/student_distilled_sel_int8.onnx
+python scripts/eval_dense_fusion.py --model student_distilled_sel --tag student_distilled_sel
+#   (repeat the last three lines with student_plain_sel for the selected-chunk student without distillation)
+python scripts/significance.py && python scripts/make_plots.py && python scripts/update_readme.py
+```
+
 No test labels go to Kaggle. The notebook returns only rankings and score matrices, and every metric is computed locally.
 
 ## Repository layout

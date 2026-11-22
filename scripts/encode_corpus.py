@@ -14,7 +14,7 @@ import torch
 from casetrail import config
 from casetrail.data import load_pcr
 from casetrail.neural.encoder import chunk_judgment, encode_texts, load_encoder
-from casetrail.neural.export_onnx import onnx_encode, onnx_session
+from casetrail.neural.onnx_runtime import onnx_encode, onnx_session
 
 # e5 models expect a "query: " prefix for symmetric (document-to-document) similarity
 PREFIX = {"intfloat__e5-small-v2": "query: "}

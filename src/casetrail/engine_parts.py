@@ -58,7 +58,7 @@ def make_encoder(info: dict):
     returns (function text items -> chunk vectors, runtime name)."""
     # Imported here so the demo starts without loading torch when no neural model has been built
     from casetrail.neural.encoder import chunk_judgment, encode_texts, load_encoder
-    from casetrail.neural.export_onnx import onnx_encode, onnx_session
+    from casetrail.neural.onnx_runtime import onnx_encode, onnx_session
     model_dir = config.PROJECT_ROOT / info["model_dir"]
     tokenizer, torch_model = load_encoder(str(model_dir))
     prefix = info.get("prefix") or PREFIX.get(model_dir.name, "")

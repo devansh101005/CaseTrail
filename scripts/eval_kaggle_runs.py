@@ -23,10 +23,12 @@ RUNS_DIR = config.INDEX_DIR / "runs"
 LSI_METRICS = ["macro_f1", "macro_precision", "macro_recall", "micro_f1", "micro_precision", "micro_recall"]
 
 
-def eval_teacher():
-    paths = {split: RUNS_DIR / f"pcr_{split}_teacher_rerank.json" for split in ["dev", "test"]}
+def eval_teacher(tag: str):
+    """tag "" = run 1 (random chunk pairs), "_sel" = run 2 (chunk pairs selected with the encoder)."""
+    name = f"teacher_rerank{tag}"
+    paths = {split: RUNS_DIR / f"pcr_{split}_{name}.json" for split in ["dev", "test"]}
     if not all(path.exists() for path in paths.values()):
-        print("Teacher re-ranking runs not found (run the Kaggle notebook first); skipped.")
+        print(f"{name} runs not found (run the Kaggle notebook first); skipped.")
         return
     runs, qrels = {}, {}
     for split, path in paths.items():
@@ -34,16 +36,16 @@ def eval_teacher():
             runs[split] = json.load(f)
         qrels[split] = qrels_of(load_pcr(split)["queries"])
     k, dev_f1 = best_k(runs["dev"], qrels["dev"], list(range(1, 21)))
+    system = f"bm25_bigram+{name}"
     rows = []
     for split in ["dev", "test"]:
         metrics = pcr_run_metrics(runs[split], qrels[split], k)
-        print(f"{split:5s} teacher_rerank: micro-F1@{k} = {metrics['micro_f1@k']:.4f}")
-        rows.extend(metric_rows("pcr", "bm25_bigram+teacher_rerank", split, metrics, len(qrels[split])))
+        print(f"{split:5s} {name}: micro-F1@{k} = {metrics['micro_f1@k']:.4f}")
+        rows.extend(metric_rows("pcr", system, split, metrics, len(qrels[split])))
+        (RUNS_DIR / f"pcr_{split}_{system}.json").write_text(json.dumps(runs[split]), encoding="utf-8")
     write_rows(config.RESULTS_DIR / "pcr_metrics.csv", rows)
-    save_tuned("pcr", "teacher_rerank", {"k": k, "dev_micro_f1": round(dev_f1, 4), "tuned_on": "dev"})
-    record_k("bm25_bigram+teacher_rerank", k)
-    for split in ["dev", "test"]:
-        (RUNS_DIR / f"pcr_{split}_bm25_bigram+teacher_rerank.json").write_text(json.dumps(runs[split]), encoding="utf-8")
+    save_tuned("pcr", name, {"k": k, "dev_micro_f1": round(dev_f1, 4), "tuned_on": "dev"})
+    record_k(system, k)
 
 
 def lsi_gold(split: str, statutes: list) -> tuple:
@@ -88,7 +90,8 @@ def eval_attention():
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.parse_args()
-    eval_teacher()
+    eval_teacher("")
+    eval_teacher("_sel")
     eval_attention()
 
 
