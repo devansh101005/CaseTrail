@@ -1,0 +1,150 @@
+{
+  "pcr": {
+    "system": "bm25_bigram",
+    "k": 7,
+    "best5": [
+      {
+        "query_id": "0000235803",
+        "f1": 0.875,
+        "hits": 7,
+        "k": 7,
+        "precedents": 9,
+        "query_words": 4971
+      },
+      {
+        "query_id": "0001206320",
+        "f1": 0.8333,
+        "hits": 5,
+        "k": 7,
+        "precedents": 5,
+        "query_words": 5400
+      },
+      {
+        "query_id": "0001860679",
+        "f1": 0.8333,
+        "hits": 5,
+        "k": 7,
+        "precedents": 5,
+        "query_words": 3916
+      },
+      {
+        "query_id": "0001390531",
+        "f1": 0.8,
+        "hits": 6,
+        "k": 7,
+        "precedents": 8,
+        "query_words": 25788
+      },
+      {
+        "query_id": "0000270817",
+        "f1": 0.7778,
+        "hits": 7,
+        "k": 7,
+        "precedents": 11,
+        "query_words": 3754
+      }
+    ],
+    "worst5": [
+      {
+        "query_id": "0001508893",
+        "f1": 0.0,
+        "hits": 0,
+        "k": 7,
+        "precedents": 1,
+        "query_words": 1039
+      },
+      {
+        "query_id": "0001839963",
+        "f1": 0.0,
+        "hits": 0,
+        "k": 7,
+        "precedents": 1,
+        "query_words": 11703
+      },
+      {
+        "query_id": "0001857950",
+        "f1": 0.0,
+        "hits": 0,
+        "k": 7,
+        "precedents": 5,
+        "query_words": 91838
+      },
+      {
+        "query_id": "0001864396",
+        "f1": 0.0,
+        "hits": 0,
+        "k": 7,
+        "precedents": 1,
+        "query_words": 371
+      },
+      {
+        "query_id": "0024858865",
+        "f1": 0.0,
+        "hits": 0,
+        "k": 7,
+        "precedents": 3,
+        "query_words": 2506
+      }
+    ],
+    "queries_with_no_hit": 20,
+    "queries": 237,
+    "median_words_no_hit": 3223,
+    "median_words_all": 4653
+  },
+  "lsi": {
+    "method": "knn",
+    "top_confusions": [
+      [
+        "Section 302",
+        "Section 506",
+        205
+      ],
+      [
+        "Section 307",
+        "Section 506",
+        199
+      ],
+      [
+        "Section 149",
+        "Section 34",
+        198
+      ],
+      [
+        "Section 147",
+        "Section 34",
+        196
+      ],
+      [
+        "Section 147",
+        "Section 323",
+        175
+      ],
+      [
+        "Section 148",
+        "Section 34",
+        174
+      ],
+      [
+        "Section 147",
+        "Section 506",
+        171
+      ],
+      [
+        "Section 120B",
+        "Section 506",
+        171
+      ],
+      [
+        "Section 302",
+        "Section 323",
+        159
+      ],
+      [
+        "Section 148",
+        "Section 323",
+        153
+      ]
+    ],
+    "note": "pair = (true statute that was missed, statute predicted instead in the same document)"
+  }
+}

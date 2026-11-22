@@ -1,0 +1,751 @@
+{
+  "pcr": {
+    "train": {
+      "queries": {
+        "docs": 827,
+        "sentences_mean": 59.4,
+        "sentences_max": 766,
+        "words_mean": 6908.8,
+        "words_median": 4604,
+        "words_max": 120641
+      },
+      "candidates": {
+        "docs": 4320,
+        "sentences_mean": 53.2,
+        "sentences_max": 2981,
+        "words_mean": 6383.1,
+        "words_median": 3684,
+        "words_max": 414998
+      },
+      "relevant_per_query_mean": 6.43,
+      "relevant_per_query_min": 1,
+      "relevant_per_query_max": 52,
+      "relevant_ids_not_in_candidate_pool": 10,
+      "queries_also_in_candidate_pool": 827,
+      "queries_listing_themselves_as_relevant": 0,
+      "mask_tags_candidates": {
+        "<ORG>": 371599,
+        "<NAME>": 212895,
+        "<CITATION>": 33171
+      },
+      "citation_leakage": {
+        "relevant_pairs": 5318,
+        "candidates_with_own_citation_header": 1372,
+        "pairs_found_via_unmasked_body_citations": 347,
+        "pairs_found_via_candidate_citator_info": 497,
+        "pairs_found_either_way": 752,
+        "fraction_found_either_way": 0.1414
+      }
+    },
+    "dev": {
+      "queries": {
+        "docs": 118,
+        "sentences_mean": 73.1,
+        "sentences_max": 1111,
+        "words_mean": 8500.4,
+        "words_median": 4757,
+        "words_max": 106354
+      },
+      "candidates": {
+        "docs": 1023,
+        "sentences_mean": 71.4,
+        "sentences_max": 2981,
+        "words_mean": 8718.2,
+        "words_median": 4086,
+        "words_max": 414998
+      },
+      "relevant_per_query_mean": 8.25,
+      "relevant_per_query_min": 1,
+      "relevant_per_query_max": 92,
+      "relevant_ids_not_in_candidate_pool": 0,
+      "queries_also_in_candidate_pool": 118,
+      "queries_listing_themselves_as_relevant": 0,
+      "mask_tags_candidates": {
+        "<ORG>": 136464,
+        "<NAME>": 61107,
+        "<CITATION>": 10346,
+        "<SLS>": 11,
+        "<SLE>": 11
+      },
+      "citation_leakage": {
+        "relevant_pairs": 973,
+        "candidates_with_own_citation_header": 424,
+        "pairs_found_via_unmasked_body_citations": 60,
+        "pairs_found_via_candidate_citator_info": 105,
+        "pairs_found_either_way": 152,
+        "fraction_found_either_way": 0.1562
+      }
+    },
+    "test": {
+      "queries": {
+        "docs": 237,
+        "sentences_mean": 60.4,
+        "sentences_max": 681,
+        "words_mean": 6802.7,
+        "words_median": 4661,
+        "words_max": 92394
+      },
+      "candidates": {
+        "docs": 1727,
+        "sentences_mean": 60.9,
+        "sentences_max": 2981,
+        "words_mean": 7080.3,
+        "words_median": 3994,
+        "words_max": 414998
+      },
+      "relevant_per_query_mean": 7.3,
+      "relevant_per_query_min": 1,
+      "relevant_per_query_max": 58,
+      "relevant_ids_not_in_candidate_pool": 3,
+      "queries_also_in_candidate_pool": 237,
+      "queries_listing_themselves_as_relevant": 0,
+      "mask_tags_candidates": {
+        "<ORG>": 168211,
+        "<NAME>": 83008,
+        "<CITATION>": 16069
+      },
+      "citation_leakage": {
+        "relevant_pairs": 1730,
+        "candidates_with_own_citation_header": 617,
+        "pairs_found_via_unmasked_body_citations": 121,
+        "pairs_found_via_candidate_citator_info": 187,
+        "pairs_found_either_way": 286,
+        "fraction_found_either_way": 0.1653
+      }
+    }
+  },
+  "lsi": {
+    "statutes": 100,
+    "train": {
+      "docs": {
+        "docs": 42750,
+        "sentences_mean": 49.9,
+        "sentences_max": 5150,
+        "words_mean": 1180.2,
+        "words_median": 450,
+        "words_max": 91010
+      },
+      "labels_per_doc_mean": 3.71,
+      "labels_per_doc_max": 31,
+      "docs_without_labels": 0,
+      "statutes_used": 100,
+      "top10_statutes": [
+        [
+          "Section 34",
+          11731
+        ],
+        [
+          "Section 302",
+          10380
+        ],
+        [
+          "Section 506",
+          7881
+        ],
+        [
+          "Section 323",
+          7728
+        ],
+        [
+          "Section 307",
+          7121
+        ],
+        [
+          "Section 147",
+          4324
+        ],
+        [
+          "Section 148",
+          4136
+        ],
+        [
+          "Section 120B",
+          4134
+        ],
+        [
+          "Section 420",
+          4046
+        ],
+        [
+          "Section 498A",
+          3835
+        ]
+      ],
+      "rarest10_statutes": [
+        [
+          "Section 155",
+          336
+        ],
+        [
+          "Section 228",
+          329
+        ],
+        [
+          "Section 415",
+          319
+        ],
+        [
+          "Section 338",
+          318
+        ],
+        [
+          "Section 366A",
+          310
+        ],
+        [
+          "Section 389",
+          309
+        ],
+        [
+          "Section 494",
+          309
+        ],
+        [
+          "Section 190",
+          304
+        ],
+        [
+          "Section 200",
+          287
+        ],
+        [
+          "Section 450",
+          272
+        ]
+      ],
+      "mask_tags": {
+        "<ENTITY>": 2391227,
+        "<SECTION>": 226195,
+        "<ACT>": 225918,
+        "<HR>": 1
+      },
+      "label_frequency": {
+        "Section 2": 343,
+        "Section 3": 1035,
+        "Section 4": 367,
+        "Section 5": 453,
+        "Section 13": 341,
+        "Section 34": 11731,
+        "Section 107": 698,
+        "Section 109": 1037,
+        "Section 114": 349,
+        "Section 120": 823,
+        "Section 120B": 4134,
+        "Section 143": 615,
+        "Section 147": 4324,
+        "Section 148": 4136,
+        "Section 149": 3818,
+        "Section 155": 336,
+        "Section 156": 665,
+        "Section 161": 831,
+        "Section 164": 393,
+        "Section 173": 523,
+        "Section 174A": 487,
+        "Section 186": 684,
+        "Section 188": 528,
+        "Section 190": 304,
+        "Section 193": 469,
+        "Section 200": 287,
+        "Section 201": 1909,
+        "Section 228": 329,
+        "Section 229A": 602,
+        "Section 279": 497,
+        "Section 294": 3009,
+        "Section 294(b)": 1138,
+        "Section 299": 385,
+        "Section 300": 1483,
+        "Section 302": 10380,
+        "Section 304": 3157,
+        "Section 304A": 569,
+        "Section 304B": 1269,
+        "Section 306": 1713,
+        "Section 307": 7121,
+        "Section 308": 543,
+        "Section 313": 821,
+        "Section 320": 566,
+        "Section 323": 7728,
+        "Section 324": 3660,
+        "Section 325": 2618,
+        "Section 326": 2510,
+        "Section 332": 879,
+        "Section 336": 585,
+        "Section 337": 380,
+        "Section 338": 318,
+        "Section 341": 3184,
+        "Section 342": 1084,
+        "Section 353": 1276,
+        "Section 354": 2205,
+        "Section 363": 1787,
+        "Section 364": 558,
+        "Section 365": 434,
+        "Section 366": 1431,
+        "Section 366A": 310,
+        "Section 375": 358,
+        "Section 376": 3724,
+        "Section 376(2)": 474,
+        "Section 379": 1658,
+        "Section 380": 632,
+        "Section 384": 351,
+        "Section 389": 309,
+        "Section 392": 1093,
+        "Section 394": 629,
+        "Section 395": 642,
+        "Section 397": 1360,
+        "Section 406": 2303,
+        "Section 409": 1031,
+        "Section 411": 591,
+        "Section 415": 319,
+        "Section 417": 485,
+        "Section 419": 530,
+        "Section 420": 4046,
+        "Section 427": 1739,
+        "Section 436": 436,
+        "Section 437": 573,
+        "Section 438": 1321,
+        "Section 447": 604,
+        "Section 448": 980,
+        "Section 450": 272,
+        "Section 452": 1549,
+        "Section 457": 363,
+        "Section 465": 607,
+        "Section 467": 1661,
+        "Section 468": 2113,
+        "Section 471": 2066,
+        "Section 482": 1327,
+        "Section 494": 309,
+        "Section 498": 564,
+        "Section 498A": 3835,
+        "Section 500": 376,
+        "Section 504": 1973,
+        "Section 506": 7881,
+        "Section 509": 491,
+        "Section 511": 674
+      }
+    },
+    "dev": {
+      "docs": {
+        "docs": 10181,
+        "sentences_mean": 54.6,
+        "sentences_max": 3161,
+        "words_mean": 1308.6,
+        "words_median": 564,
+        "words_max": 74262
+      },
+      "labels_per_doc_mean": 3.92,
+      "labels_per_doc_max": 28,
+      "docs_without_labels": 0,
+      "statutes_used": 100,
+      "top10_statutes": [
+        [
+          "Section 34",
+          2936
+        ],
+        [
+          "Section 302",
+          2596
+        ],
+        [
+          "Section 506",
+          1972
+        ],
+        [
+          "Section 323",
+          1932
+        ],
+        [
+          "Section 307",
+          1779
+        ],
+        [
+          "Section 147",
+          1086
+        ],
+        [
+          "Section 120B",
+          1033
+        ],
+        [
+          "Section 148",
+          1033
+        ],
+        [
+          "Section 420",
+          1015
+        ],
+        [
+          "Section 498A",
+          960
+        ]
+      ],
+      "rarest10_statutes": [
+        [
+          "Section 13",
+          84
+        ],
+        [
+          "Section 155",
+          84
+        ],
+        [
+          "Section 228",
+          83
+        ],
+        [
+          "Section 190",
+          80
+        ],
+        [
+          "Section 338",
+          80
+        ],
+        [
+          "Section 415",
+          80
+        ],
+        [
+          "Section 389",
+          78
+        ],
+        [
+          "Section 494",
+          77
+        ],
+        [
+          "Section 200",
+          72
+        ],
+        [
+          "Section 450",
+          68
+        ]
+      ],
+      "mask_tags": {
+        "<ENTITY>": 627844,
+        "<SECTION>": 59484,
+        "<ACT>": 58696,
+        "<SLE>": 1
+      },
+      "label_frequency": {
+        "Section 2": 86,
+        "Section 3": 258,
+        "Section 4": 98,
+        "Section 5": 113,
+        "Section 13": 84,
+        "Section 34": 2936,
+        "Section 107": 174,
+        "Section 109": 260,
+        "Section 114": 92,
+        "Section 120": 206,
+        "Section 120B": 1033,
+        "Section 143": 232,
+        "Section 147": 1086,
+        "Section 148": 1033,
+        "Section 149": 954,
+        "Section 155": 84,
+        "Section 156": 170,
+        "Section 161": 208,
+        "Section 164": 100,
+        "Section 173": 131,
+        "Section 174A": 122,
+        "Section 186": 172,
+        "Section 188": 132,
+        "Section 190": 80,
+        "Section 193": 118,
+        "Section 200": 72,
+        "Section 201": 478,
+        "Section 228": 83,
+        "Section 229A": 151,
+        "Section 279": 125,
+        "Section 294": 405,
+        "Section 294(b)": 302,
+        "Section 299": 99,
+        "Section 300": 371,
+        "Section 302": 2596,
+        "Section 304": 790,
+        "Section 304A": 142,
+        "Section 304B": 318,
+        "Section 306": 425,
+        "Section 307": 1779,
+        "Section 308": 152,
+        "Section 313": 205,
+        "Section 320": 142,
+        "Section 323": 1932,
+        "Section 324": 922,
+        "Section 325": 707,
+        "Section 326": 666,
+        "Section 332": 228,
+        "Section 336": 145,
+        "Section 337": 95,
+        "Section 338": 80,
+        "Section 341": 796,
+        "Section 342": 272,
+        "Section 353": 363,
+        "Section 354": 552,
+        "Section 363": 447,
+        "Section 364": 139,
+        "Section 365": 115,
+        "Section 366": 358,
+        "Section 366A": 86,
+        "Section 375": 90,
+        "Section 376": 932,
+        "Section 376(2)": 118,
+        "Section 379": 414,
+        "Section 380": 159,
+        "Section 384": 105,
+        "Section 389": 78,
+        "Section 392": 273,
+        "Section 394": 157,
+        "Section 395": 162,
+        "Section 397": 348,
+        "Section 406": 577,
+        "Section 409": 259,
+        "Section 411": 149,
+        "Section 415": 80,
+        "Section 417": 132,
+        "Section 419": 142,
+        "Section 420": 1015,
+        "Section 427": 453,
+        "Section 436": 116,
+        "Section 437": 141,
+        "Section 438": 346,
+        "Section 447": 156,
+        "Section 448": 252,
+        "Section 450": 68,
+        "Section 452": 391,
+        "Section 457": 92,
+        "Section 465": 160,
+        "Section 467": 417,
+        "Section 468": 563,
+        "Section 471": 529,
+        "Section 482": 348,
+        "Section 494": 77,
+        "Section 498": 141,
+        "Section 498A": 960,
+        "Section 500": 93,
+        "Section 504": 606,
+        "Section 506": 1972,
+        "Section 509": 123,
+        "Section 511": 176
+      }
+    },
+    "test": {
+      "docs": {
+        "docs": 13019,
+        "sentences_mean": 52.8,
+        "sentences_max": 7871,
+        "words_mean": 1268.1,
+        "words_median": 557,
+        "words_max": 143315
+      },
+      "labels_per_doc_mean": 3.9,
+      "labels_per_doc_max": 23,
+      "docs_without_labels": 0,
+      "statutes_used": 100,
+      "top10_statutes": [
+        [
+          "Section 34",
+          3731
+        ],
+        [
+          "Section 302",
+          3244
+        ],
+        [
+          "Section 506",
+          2558
+        ],
+        [
+          "Section 323",
+          2490
+        ],
+        [
+          "Section 307",
+          2224
+        ],
+        [
+          "Section 147",
+          1381
+        ],
+        [
+          "Section 120B",
+          1293
+        ],
+        [
+          "Section 148",
+          1292
+        ],
+        [
+          "Section 420",
+          1262
+        ],
+        [
+          "Section 498A",
+          1200
+        ]
+      ],
+      "rarest10_statutes": [
+        [
+          "Section 13",
+          106
+        ],
+        [
+          "Section 228",
+          103
+        ],
+        [
+          "Section 366A",
+          102
+        ],
+        [
+          "Section 415",
+          100
+        ],
+        [
+          "Section 338",
+          99
+        ],
+        [
+          "Section 389",
+          97
+        ],
+        [
+          "Section 494",
+          97
+        ],
+        [
+          "Section 190",
+          96
+        ],
+        [
+          "Section 450",
+          93
+        ],
+        [
+          "Section 200",
+          90
+        ]
+      ],
+      "mask_tags": {
+        "<ENTITY>": 788774,
+        "<SECTION>": 75874,
+        "<ACT>": 75388,
+        "<SLS>": 6,
+        "<SLE>": 4
+      },
+      "label_frequency": {
+        "Section 2": 117,
+        "Section 3": 322,
+        "Section 4": 118,
+        "Section 5": 141,
+        "Section 13": 106,
+        "Section 34": 3731,
+        "Section 107": 218,
+        "Section 109": 325,
+        "Section 114": 122,
+        "Section 120": 256,
+        "Section 120B": 1293,
+        "Section 143": 269,
+        "Section 147": 1381,
+        "Section 148": 1292,
+        "Section 149": 1192,
+        "Section 155": 107,
+        "Section 156": 214,
+        "Section 161": 261,
+        "Section 164": 123,
+        "Section 173": 164,
+        "Section 174A": 153,
+        "Section 186": 210,
+        "Section 188": 165,
+        "Section 190": 96,
+        "Section 193": 147,
+        "Section 200": 90,
+        "Section 201": 598,
+        "Section 228": 103,
+        "Section 229A": 189,
+        "Section 279": 155,
+        "Section 294": 904,
+        "Section 294(b)": 417,
+        "Section 299": 125,
+        "Section 300": 463,
+        "Section 302": 3244,
+        "Section 304": 987,
+        "Section 304A": 178,
+        "Section 304B": 397,
+        "Section 306": 534,
+        "Section 307": 2224,
+        "Section 308": 196,
+        "Section 313": 256,
+        "Section 320": 208,
+        "Section 323": 2490,
+        "Section 324": 1144,
+        "Section 325": 872,
+        "Section 326": 809,
+        "Section 332": 311,
+        "Section 336": 229,
+        "Section 337": 118,
+        "Section 338": 99,
+        "Section 341": 1072,
+        "Section 342": 386,
+        "Section 353": 480,
+        "Section 354": 691,
+        "Section 363": 559,
+        "Section 364": 192,
+        "Section 365": 138,
+        "Section 366": 448,
+        "Section 366A": 102,
+        "Section 375": 112,
+        "Section 376": 1165,
+        "Section 376(2)": 169,
+        "Section 379": 519,
+        "Section 380": 198,
+        "Section 384": 127,
+        "Section 389": 97,
+        "Section 392": 351,
+        "Section 394": 253,
+        "Section 395": 202,
+        "Section 397": 427,
+        "Section 406": 720,
+        "Section 409": 324,
+        "Section 411": 204,
+        "Section 415": 100,
+        "Section 417": 162,
+        "Section 419": 172,
+        "Section 420": 1262,
+        "Section 427": 579,
+        "Section 436": 155,
+        "Section 437": 186,
+        "Section 438": 442,
+        "Section 447": 196,
+        "Section 448": 332,
+        "Section 450": 93,
+        "Section 452": 486,
+        "Section 457": 117,
+        "Section 465": 218,
+        "Section 467": 525,
+        "Section 468": 687,
+        "Section 471": 656,
+        "Section 482": 420,
+        "Section 494": 97,
+        "Section 498": 196,
+        "Section 498A": 1200,
+        "Section 500": 118,
+        "Section 504": 690,
+        "Section 506": 2558,
+        "Section 509": 153,
+        "Section 511": 230
+      }
+    }
+  },
+  "overlap": {
+    "pcr_test_ids_in_train_or_dev": 809,
+    "pcr_dev_ids_in_train": 436,
+    "lsi_test_ids_in_train_or_dev": 0,
+    "pcr_test_queries_near_dup_in_pcr_train_dev": 171,
+    "pcr_test_pool_near_dup_in_pcr_train_dev": 764,
+    "lsi_test_near_dup_in_lsi_train": 233,
+    "lsi_dev_near_dup_in_lsi_train": 215,
+    "pcr_test_pool_near_dup_in_lsi_train": 0,
+    "pcr_train_pool_near_dup_in_lsi_test": 1,
+    "near_dup_rule": "a doc counts if >= 50% of its 60-char anchored shingles occur in the other collection"
+  }
+}

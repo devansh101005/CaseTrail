@@ -1,0 +1,97 @@
+task,system,split,metric,value,n
+lsi,nb,dev,macro_f1,0.2835,10181
+lsi,nb,dev,macro_precision,0.2558,10181
+lsi,nb,dev,macro_recall,0.3639,10181
+lsi,nb,dev,micro_f1,0.3702,10181
+lsi,nb,dev,micro_precision,0.2961,10181
+lsi,nb,dev,micro_recall,0.4937,10181
+lsi,nb,dev,f1[Section 34],0.548,10181
+lsi,nb,dev,f1[Section 302],0.732,10181
+lsi,nb,dev,f1[Section 506],0.431,10181
+lsi,nb,dev,f1[Section 323],0.4297,10181
+lsi,nb,dev,f1[Section 307],0.4528,10181
+lsi,nb,dev,f1[Section 147],0.3772,10181
+lsi,nb,dev,f1[Section 148],0.3999,10181
+lsi,nb,dev,f1[Section 120B],0.4139,10181
+lsi,nb,dev,f1[Section 420],0.4753,10181
+lsi,nb,dev,f1[Section 498A],0.5848,10181
+lsi,nb,test,macro_f1,0.2712,13019
+lsi,nb,test,macro_precision,0.2454,13019
+lsi,nb,test,macro_recall,0.3453,13019
+lsi,nb,test,micro_f1,0.3601,13019
+lsi,nb,test,micro_precision,0.2903,13019
+lsi,nb,test,micro_recall,0.4739,13019
+lsi,nb,test,f1[Section 34],0.5143,13019
+lsi,nb,test,f1[Section 302],0.7074,13019
+lsi,nb,test,f1[Section 506],0.4455,13019
+lsi,nb,test,f1[Section 323],0.433,13019
+lsi,nb,test,f1[Section 307],0.4206,13019
+lsi,nb,test,f1[Section 147],0.3703,13019
+lsi,nb,test,f1[Section 148],0.3966,13019
+lsi,nb,test,f1[Section 120B],0.4041,13019
+lsi,nb,test,f1[Section 420],0.4993,13019
+lsi,nb,test,f1[Section 498A],0.5848,13019
+lsi,rocchio,dev,macro_f1,0.2152,10181
+lsi,rocchio,dev,macro_precision,0.2004,10181
+lsi,rocchio,dev,macro_recall,0.2848,10181
+lsi,rocchio,dev,micro_f1,0.2655,10181
+lsi,rocchio,dev,micro_precision,0.1922,10181
+lsi,rocchio,dev,micro_recall,0.429,10181
+lsi,rocchio,dev,f1[Section 34],0.4727,10181
+lsi,rocchio,dev,f1[Section 302],0.6401,10181
+lsi,rocchio,dev,f1[Section 506],0.3333,10181
+lsi,rocchio,dev,f1[Section 323],0.3251,10181
+lsi,rocchio,dev,f1[Section 307],0.3261,10181
+lsi,rocchio,dev,f1[Section 147],0.2433,10181
+lsi,rocchio,dev,f1[Section 148],0.2659,10181
+lsi,rocchio,dev,f1[Section 120B],0.2104,10181
+lsi,rocchio,dev,f1[Section 420],0.2819,10181
+lsi,rocchio,dev,f1[Section 498A],0.3605,10181
+lsi,rocchio,test,macro_f1,0.1926,13019
+lsi,rocchio,test,macro_precision,0.1858,13019
+lsi,rocchio,test,macro_recall,0.2486,13019
+lsi,rocchio,test,micro_f1,0.2533,13019
+lsi,rocchio,test,micro_precision,0.1864,13019
+lsi,rocchio,test,micro_recall,0.3947,13019
+lsi,rocchio,test,f1[Section 34],0.4588,13019
+lsi,rocchio,test,f1[Section 302],0.5924,13019
+lsi,rocchio,test,f1[Section 506],0.3364,13019
+lsi,rocchio,test,f1[Section 323],0.3249,13019
+lsi,rocchio,test,f1[Section 307],0.3032,13019
+lsi,rocchio,test,f1[Section 147],0.2216,13019
+lsi,rocchio,test,f1[Section 148],0.2477,13019
+lsi,rocchio,test,f1[Section 120B],0.1935,13019
+lsi,rocchio,test,f1[Section 420],0.3045,13019
+lsi,rocchio,test,f1[Section 498A],0.399,13019
+lsi,knn,dev,macro_f1,0.3404,10181
+lsi,knn,dev,macro_precision,0.3352,10181
+lsi,knn,dev,macro_recall,0.3882,10181
+lsi,knn,dev,micro_f1,0.4165,10181
+lsi,knn,dev,micro_precision,0.3511,10181
+lsi,knn,dev,micro_recall,0.5119,10181
+lsi,knn,dev,f1[Section 34],0.596,10181
+lsi,knn,dev,f1[Section 302],0.7361,10181
+lsi,knn,dev,f1[Section 506],0.4801,10181
+lsi,knn,dev,f1[Section 323],0.4503,10181
+lsi,knn,dev,f1[Section 307],0.4876,10181
+lsi,knn,dev,f1[Section 147],0.3879,10181
+lsi,knn,dev,f1[Section 148],0.4216,10181
+lsi,knn,dev,f1[Section 120B],0.3761,10181
+lsi,knn,dev,f1[Section 420],0.4736,10181
+lsi,knn,dev,f1[Section 498A],0.5755,10181
+lsi,knn,test,macro_f1,0.3173,13019
+lsi,knn,test,macro_precision,0.318,13019
+lsi,knn,test,macro_recall,0.3536,13019
+lsi,knn,test,micro_f1,0.3988,13019
+lsi,knn,test,micro_precision,0.3446,13019
+lsi,knn,test,micro_recall,0.4732,13019
+lsi,knn,test,f1[Section 34],0.5687,13019
+lsi,knn,test,f1[Section 302],0.6987,13019
+lsi,knn,test,f1[Section 506],0.4835,13019
+lsi,knn,test,f1[Section 323],0.4447,13019
+lsi,knn,test,f1[Section 307],0.4458,13019
+lsi,knn,test,f1[Section 147],0.3455,13019
+lsi,knn,test,f1[Section 148],0.3927,13019
+lsi,knn,test,f1[Section 120B],0.3618,13019
+lsi,knn,test,f1[Section 420],0.455,13019
+lsi,knn,test,f1[Section 498A],0.5644,13019

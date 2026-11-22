@@ -1,0 +1,70 @@
+{
+  "note": "Published numbers, not ours.",
+  "pcr_metric_definition": "micro-averaged F1 over all queries of the top-K retrieved candidates; K chosen on the validation set, F1 reported on test at that K (U-CREAT Sec. 5 and App. A)",
+  "references": {
+    "IL-TUR": "Joshi, A., Paul, S., Sharma, A., Goyal, P., Ghosh, S. and Modi, A., 2024. IL-TUR: Benchmark for Indian Legal Text Understanding and Reasoning. In Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers). (pages: verify)",
+    "U-CREAT": "Joshi, A., Sharma, A., Tanikella, S.K. and Modi, A., 2023, July. U-CREAT: Unsupervised Case Retrieval using Events extrAcTion. In Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers) (pp. 13899-13915)."
+  },
+  "baselines": [
+    {
+      "task": "pcr",
+      "system": "BM25 (word level)",
+      "metric": "micro_f1@k",
+      "value_percent": 13.85,
+      "k": 5,
+      "precision_percent": 17.11,
+      "recall_percent": 11.64,
+      "source": "IL-TUR Table 23; U-CREAT Table 2/5"
+    },
+    {
+      "task": "pcr",
+      "system": "BM25 (bigram)",
+      "metric": "micro_f1@k",
+      "value_percent": 28.59,
+      "k": 7,
+      "precision_percent": 29.3,
+      "recall_percent": 27.91,
+      "source": "IL-TUR Table 23; U-CREAT Table 2/5"
+    },
+    {
+      "task": "pcr",
+      "system": "Atomic events + BM25",
+      "metric": "micro_f1@k",
+      "value_percent": 36.77,
+      "k": 7,
+      "precision_percent": 37.69,
+      "recall_percent": 35.9,
+      "source": "IL-TUR Table 23"
+    },
+    {
+      "task": "pcr",
+      "system": "Event-filtered docs + BM25 (quad-gram) [SOTA]",
+      "metric": "micro_f1@k",
+      "value_percent": 39.15,
+      "k": 7,
+      "precision_percent": 40.12,
+      "recall_percent": 38.22,
+      "source": "IL-TUR Table 23 and Table 2"
+    },
+    {
+      "task": "pcr",
+      "system": "DistilBERT (full document)",
+      "metric": "micro_f1@k",
+      "value_percent": 16.61,
+      "k": 7,
+      "precision_percent": 17.02,
+      "recall_percent": 16.21,
+      "source": "IL-TUR Table 23"
+    },
+    {
+      "task": "lsi",
+      "system": "LeSICiN (graph-based) [SOTA]",
+      "metric": "macro_f1",
+      "value_percent": 28.08,
+      "k": null,
+      "precision_percent": null,
+      "recall_percent": null,
+      "source": "IL-TUR Table 2 (mF1 = macro-F1)"
+    }
+  ]
+}

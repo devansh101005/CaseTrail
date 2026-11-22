@@ -1,0 +1,15 @@
+task,system,split,metric,value,n
+efficiency,minilm_torch_fp32,dev,size_mb,90.4051,26
+efficiency,minilm_torch_fp32,dev,query_encode_median_ms,1203.8534,26
+efficiency,minilm_torch_fp32,dev,query_encode_p95_ms,1302.1788,26
+efficiency,minilm_torch_fp32,dev,query_chunks,26,26
+efficiency,minilm_onnx_fp32,dev,size_mb,90.4051,26
+efficiency,minilm_onnx_fp32,dev,query_encode_median_ms,1492.263,26
+efficiency,minilm_onnx_fp32,dev,query_encode_p95_ms,1545.691,26
+efficiency,minilm_onnx_fp32,dev,query_chunks,26,26
+efficiency,minilm_onnx_int8,dev,size_mb,23.0081,26
+efficiency,minilm_onnx_int8,dev,query_encode_median_ms,1028.5075,26
+efficiency,minilm_onnx_int8,dev,query_encode_p95_ms,1226.1123,26
+efficiency,minilm_onnx_int8,dev,query_chunks,26,26
+efficiency,minilm_onnx_int8,dev,cosine_vs_fp32_mean,0.9933,26
+efficiency,minilm_onnx_int8,dev,cosine_vs_fp32_min,0.9851,26
