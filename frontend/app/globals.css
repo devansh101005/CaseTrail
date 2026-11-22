@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+/* Design tokens measured from Waypoint (docs/FRONTEND_GUIDE.md section 2) */
+:root {
+  --paper: #f4f3ef;
+  --paper-raised: #fbfaf7;
+  --ink: #16161a;
+  --ink-soft: #2a2a30;
+  --on-ink: #f4f3ef;
+  --on-ink-muted: rgba(244, 243, 239, 0.72);
+  --hairline: #dcdad3;
+  --hairline-ink: rgba(244, 243, 239, 0.22);
+  --line-red: #d82a24;
+  --line-red-ink: #ae1b16;
+  --line-blue: #1b45c4;
+  --line-green: #00734a;
+  --line-amber: #e39a0c;
+  --line-amber-ink: #8a5b00;
+  --red-on-ink: #ff6b63;
+}
+
+@theme inline {
+  --color-paper: var(--paper);
+  --color-paper-raised: var(--paper-raised);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+  --color-on-ink: var(--on-ink);
+  --color-on-ink-muted: var(--on-ink-muted);
+  --color-hairline: var(--hairline);
+  --color-hairline-ink: var(--hairline-ink);
+  --color-line-red: var(--line-red);
+  --color-line-red-ink: var(--line-red-ink);
+  --color-line-blue: var(--line-blue);
+  --color-line-green: var(--line-green);
+  --color-line-amber: var(--line-amber);
+  --color-line-amber-ink: var(--line-amber-ink);
+  --color-red-on-ink: var(--red-on-ink);
+  --font-display: var(--font-archivo);
+  --font-body: var(--font-inter);
+  --font-mono: var(--font-jetbrains);
+  --radius-none: 0px;
+}
+
+html,
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-inter), system-ui, sans-serif;
+}
+
+/* Square everything, visible focus ring in the primary line colour */
+* {
+  border-radius: 0;
+}
+:focus-visible {
+  outline: 2px solid var(--line-red);
+  outline-offset: 2px;
+}
+
+.display {
+  font-family: var(--font-archivo), sans-serif;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: -0.025em;
+  line-height: 0.95;
+}
+
+.mono-label {
+  font-family: var(--font-jetbrains), monospace;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 11px;
+}
+
+.dotted-grid {
+  background-image: radial-gradient(rgba(244, 243, 239, 0.12) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+/* Ticker: slow scroll, stopped for people who prefer reduced motion */
+@keyframes ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.ticker-track {
+  animation: ticker 60s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track {
+    animation: none;
+  }
+}
