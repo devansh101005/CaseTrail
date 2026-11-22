@@ -51,8 +51,8 @@ Mark items `[x]` when done.
 **Done when:** ablation table BM25 → + neural → + fusion → + reranker, with size/latency, in `results/`.
 
 ## P6 — Neural statute classifier
-- [ ] Statute-description cross-attention model (statutes attend over case chunks), multi-label BCE loss — *running in Kaggle run 1; evaluated locally with `scripts/eval_kaggle_runs.py` once its outputs are downloaded*
-- [ ] Compare with NB / Rocchio / kNN and LeSICiN; 3 seeds if time allows
+- [x] Statute-description cross-attention model (statutes attend over case chunks), multi-label BCE loss — *Kaggle run 1, 3 seeds: test macro-F1 27.14 ± 0.09*
+- [x] Compare with NB / Rocchio / kNN and LeSICiN; 3 seeds if time allows — *ties NB (27.12), below kNN (31.73) and LeSICiN (28.08)*
 **Done when:** row added to `results/lsi_metrics.csv` with mean ± std.
 
 ## P7 — Evaluation wrap-up
@@ -69,9 +69,9 @@ Mark items `[x]` when done.
 **Done when:** full demo flow works end to end on real test judgments.
 
 ## P9 — Report, README, submission
-- [ ] Report in research-paper format (`docs/REPORT_FORMAT.md`) → `docs/report/CaseTrail_report.pdf`
-- [ ] README: setup, run, data, what works / planned, results table generated from `results/`
-- [ ] `docs/AI_USE.md` final, `docs/DATA.md` credits final
+- [x] Report in research-paper format (`docs/REPORT_FORMAT.md`) → `docs/report/CaseTrail_report.pdf`
+- [x] README: setup, run, data, what works / planned, results table generated from `results/`
+- [x] `docs/AI_USE.md` final, `docs/DATA.md` credits final
 - [ ] Clean-folder reproduction test from a fresh clone — *partial run 2026-11-22 on commit 295e7db: setup from README, P1 data stats, P2 indexes + dev tuning + PCR evaluation all byte-identical, pytest 64 passed, frontend builds. Still to repeat at submission: LSI, graphs, neural (after the Kaggle outputs)*
 - [ ] ZIP per `docs/SUBMISSION.md` — *decided 2026-11-22: the IL-TUR files are NOT put in the ZIP; include `scripts/download_data.py`, the split ids and a note on how to get the data*
 - [ ] Demo + viva rehearsal — *NOT DONE YET (2026-11-22): I will rehearse later, including one run with Wi-Fi off*

@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CaseTrail report</title>
+<style>
+@page { size: A4; margin: 18mm 17mm 18mm 17mm; }
+body { font-family: "Times New Roman", Times, serif; font-size: 10.5pt; line-height: 1.3; color: #000; margin: 0; }
+h1, h2, h3, .abstract-title, th, .tcap, figcaption, .diagram text { font-family: Arial, Helvetica, sans-serif; }
+h1 { font-size: 19pt; text-align: center; margin: 0 0 3pt; }
+.subtitle { text-align: center; font-size: 12pt; font-style: italic; margin: 0 0 5pt; }
+.course { text-align: center; margin: 0 0 7pt; }
+.links { text-align: center; font-size: 10pt; margin: 6pt 0 0; }
+a { color: #1f4e9c; text-decoration: none; }
+h2 { font-size: 12.5pt; margin: 12pt 0 4pt; page-break-after: avoid; }
+h3 { font-size: 10.5pt; margin: 8pt 0 2pt; page-break-after: avoid; }
+p { margin: 0 0 5pt; text-align: justify; }
+.abstract-title { font-weight: bold; text-align: center; margin: 11pt 0 3pt; }
+.abstract { margin: 0 22pt 6pt; }
+hr { border: none; border-top: 1px solid #000; margin: 9pt 0; }
+code { font-family: "Courier New", Courier, monospace; font-size: 9.5pt; }
+table { border-collapse: collapse; margin: 0 auto 8pt; font-size: 9pt; page-break-inside: avoid; }
+th, td { border: 1px solid #000; padding: 1.8pt 4.5pt; vertical-align: top; }
+th { background: #d9d9d9; font-size: 8.5pt; text-align: center; }
+td.num { text-align: right; font-variant-numeric: tabular-nums; }
+tr.best td { font-weight: bold; }
+tr.group td { background: #f2f2f2; font-style: italic; }
+table.team { margin: 4pt auto 0; font-size: 10pt; }
+table.long { page-break-inside: auto; }
+table.long tr { page-break-inside: avoid; }
+.tcap { text-align: center; font-weight: bold; font-size: 9pt; margin: 8pt 0 3pt; page-break-after: avoid; }
+.tcap span, figcaption span { font-weight: normal; }
+figure { margin: 6pt 0 9pt; text-align: center; page-break-inside: avoid; }
+figure img { max-width: 100%; }
+figcaption { font-size: 9pt; margin-top: 3pt; text-align: center; }
+figcaption b { font-weight: bold; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 12pt; align-items: end; }
+.two figure img { width: 100%; max-height: 54mm; object-fit: contain; }
+.eq { display: flex; align-items: center; justify-content: center; position: relative; margin: 5pt 0 7pt; page-break-inside: avoid; }
+.eq .no { position: absolute; right: 0; }
+ul, ol { margin: 2pt 0 6pt 18pt; padding: 0; }
+li { margin-bottom: 2pt; text-align: justify; }
+.refs li { font-size: 10pt; margin-bottom: 3pt; }
+.diagram { width: 100%; height: auto; }
+</style>
+</head>
+<body>
+
+<h1>CaseTrail</h1>
+<p class="subtitle">Precedent and Statute Retrieval for Indian Court Judgments using Link Analysis and Distilled Neural Models</p>
+<p class="course">CSD358 Information Retrieval &nbsp;|&nbsp; Course Project &nbsp;|&nbsp; Shiv Nadar University</p>
+<table class="team">
+<thead><tr><th>Name</th><th>Roll No.</th></tr></thead>
+<tbody>
+<tr><td>Devansh Pandey</td><td>2310110461</td></tr>
+<tr><td>Anamika Pal</td><td>2310110037</td></tr>
+<tr><td>Abhinav Bachchas</td><td>2310110383</td></tr>
+</tbody>
+</table>
+<p class="links"><b>Code:</b> <a href="https://github.com/devansh101005/CaseTrail">github.com/devansh101005/CaseTrail</a></p>
+
+<p class="abstract-title">Abstract</p>
+<p class="abstract">When a lawyer in India works on a new case, two questions come up again and again: which earlier judgments are similar, and which sections of law apply. Today this is mostly done with keyword search and a lot of manual reading. We built CaseTrail, a system that answers both questions for Indian Supreme Court judgments and shows why each answer was given. We used the IL-TUR benchmark with its Prior Case Retrieval (PCR) and Legal Statute Identification (LSI) tasks, and wrote the classical IR parts ourselves: the inverted index, BM25, tf-idf, PageRank, HITS, Naive Bayes, Rocchio, kNN and all evaluation metrics. On top of these we trained a chunk-based neural encoder with BM25 hard negatives, tried cross-encoder distillation, and built a web demo. Every setting was tuned on the dev split, and the test split was scored only once per system. On PCR, a tuned BM25 with word bigrams reached a test micro-F1@K of 42.43, against 39.15 for the best published system, and fusing it with our fine-tuned e5 encoder raised this to 43.43. On LSI, our kNN classifier reached a test macro-F1 of 31.73, against 28.08 for the published LeSICiN model. Two findings surprised us: some case citations are left unmasked in the data and give away 14 to 17 percent of the answers, and none of our link analysis signals helped once bigrams were used. Our cross-encoder teacher never learned from random chunk pairs, so distillation gave no gain.</p>
+<hr>
+
+<h2>1. Introduction</h2>
+<p>Indian courts produce a very large number of judgments every year, and a single Supreme Court judgment can easily run to several thousand words. A lawyer preparing a case has to find earlier judgments on similar facts (precedents), because courts are expected to follow them, and has to work out which sections of law, for example of the Indian Penal Code (IPC), apply to the facts. Both jobs are slow when done by hand.</p>
+<p>The usual tools are keyword search engines such as Indian Kanoon. Keyword search works when the lawyer already knows the right words, but it has two problems with judgments. The same facts can be written in very different words ("harassment for dowry" and "demand of money from the bride's family" describe the same thing). And a whole judgment is far too long to type in as a query, so the lawyer has to guess which few words matter.</p>
+<p>This is what made the topic interesting to us. It is a real retrieval problem with long documents, a benchmark with judged answers, and a clear use: a tool that suggests precedents and statutes can save a junior advocate or a legal aid worker hours of reading. We also wanted to see how far the classical methods from our course go on such data before adding neural models, and whether link analysis (PageRank and HITS), which works so well on the web, helps on legal text.</p>
+<p>Our main contributions are:</p>
+<ol>
+<li>CaseTrail, an end-to-end system for both tasks, with our own implementation of the inverted index, BM25, tf-idf, PageRank, HITS, Naive Bayes, Rocchio, kNN and the benchmark metrics, and a demo that explains every result.</li>
+<li>A strict evaluation on IL-TUR in which every setting is chosen on dev, with paired randomisation tests for the main comparisons and a comparison with the published baselines.</li>
+<li>A data finding: some citations in the PCR texts are not masked and give away part of the answers. We measured this, removed them, and report how much they would have changed the scores.</li>
+<li>A study of four link analysis signals for precedent retrieval, including a citation graph built only from training labels and query-dependent HITS, and the finding that none of them helped over BM25 with bigrams.</li>
+<li>A small neural layer: a chunk-based bi-encoder with MaxSim scoring, trained with BM25 hard negatives, that adds a significant 1.00 point to BM25 when fused with it, and an INT8 version that is four times smaller. We also report a cross-encoder distillation setup that did not work, and why we think it failed.</li>
+</ol>
+
+<h2>2. Literature Review</h2>
+<p><b>Benchmarks for Indian legal text.</b> Joshi et al. (2024) introduced IL-TUR, a benchmark of eight tasks on Indian legal documents with fixed splits and baselines for each task. We use two of them. For Prior Case Retrieval the dataset comes from the earlier U-CREAT paper (Joshi et al., 2023), which also defines the evaluation: micro-averaged F1 over the top K results of every query, with K picked on the validation set. U-CREAT represents each judgment by the events it describes and runs BM25 over those events; its best version reaches 39.15 micro-F1@K, while plain word-level BM25 reaches only 13.85 in their tables. For statute identification the strongest published model on IL-TUR is LeSICiN (Paul et al., 2022), a heterogeneous graph model that links judgments, statutes and their texts, with 28.08 macro-F1.</p>
+<p><b>Classical retrieval.</b> BM25 comes from the probabilistic relevance framework described by Robertson and Zaragoza (2009). It adds term frequency saturation and document length normalisation to tf-idf, which matters a lot for long documents like judgments. Our index, tf-idf weighting and vector space classifiers (Rocchio, kNN, Naive Bayes) follow the course textbook by Manning et al. (2008).</p>
+<p><b>Link analysis.</b> PageRank (Brin and Page, 1998) scores a page by the chance that a random surfer is on it, so pages linked from important pages become important. HITS (Kleinberg, 1999) gives every node a hub score and an authority score, and is meant to be run on a small graph built around one query. Both were made for the web. Citation graphs between judgments look similar, so we wanted to test whether these ideas carry over to legal retrieval.</p>
+<p><b>Neural retrieval.</b> Sentence-BERT (Reimers and Gurevych, 2019) and Dense Passage Retrieval (Karpukhin et al., 2020) showed that a bi-encoder, which turns the query and the document into one vector each, can be trained for retrieval and searched quickly. E5 (Wang et al., 2022) is a small, general bi-encoder trained this way, and it is one of our two candidate models. ColBERT (Khattab and Zaharia, 2020) keeps one vector per token and scores with MaxSim, matching each query part to its best document part; we use the same MaxSim idea at the level of 256-token chunks, because whole judgments do not fit in a small encoder. Cross-encoders are more accurate than bi-encoders but much slower, and Hofstätter et al. (2020) showed that a bi-encoder can learn from a cross-encoder through Margin-MSE distillation. To combine rankers we use reciprocal rank fusion (Cormack et al., 2009) and a weighted sum of normalised scores.</p>
+<p><b>What is new in our work.</b> As far as we know, earlier PCR work on this benchmark either runs BM25 on raw text or replaces the text with extracted events. We show that a well tuned BM25 with bigrams and careful cleaning is already a strong system, and we report a citation leak in the data that earlier papers do not mention. We also test link analysis signals on this task and report that they did not help, which we think is useful for others to know. Finally, we compare our own Naive Bayes, Rocchio and kNN against the published LeSICiN model on the same splits, and put everything behind one explainable, CPU-only demo.</p>
+
+<h2>3. Objective</h2>
+<p>We set ourselves four goals at the start of the project, each one something we could check:</p>
+<ol>
+<li>For precedent retrieval, rank the candidate judgments so that the ones a query really cites come first, and get close to or above the best published micro-F1@K on IL-TUR (39.15), with every setting chosen on dev.</li>
+<li>For statute identification, predict which of the 100 IPC sections apply to a judgment, and get close to or above the published LeSICiN macro-F1 (28.08).</li>
+<li>Answer a query in about a second on a normal laptop CPU, offline, with a neural model of at most about 30 MB.</li>
+<li>For every result, show the keyword score, the neural score, the graph authority and the passages that matched, so a user can see why it was returned.</li>
+</ol>
+
+<h2>4. Proposed Model</h2>
+<p>CaseTrail has two halves (Figure 1). The offline half is a set of scripts that we run once. They download the data, clean it, build the indexes, graphs, classifiers and the neural encoder, and choose every setting on dev. The online half is the demo: it loads all of this once at start-up and then answers one query at a time.</p>
+<figure>
+<svg class="diagram" viewBox="0 0 760 600" role="img" aria-label="CaseTrail pipeline: offline build and online query">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#333"/></marker></defs>
+<g font-size="13" fill="#000">
+<rect x="6" y="6" width="748" height="262" fill="none" stroke="#666" stroke-dasharray="5 4"/>
+<text x="20" y="28" font-weight="bold">Offline: built once by the scripts</text>
+<g fill="none" stroke="#000" stroke-width="1.2">
+<rect x="20" y="44" width="160" height="66"/><rect x="206" y="44" width="160" height="66"/><rect x="392" y="44" width="160" height="66"/><rect x="578" y="44" width="160" height="66"/>
+<rect x="20" y="136" width="160" height="66"/><rect x="206" y="136" width="160" height="66"/><rect x="392" y="136" width="160" height="66"/>
+</g>
+<text x="32" y="66" font-weight="bold">IL-TUR data</text><text x="32" y="85" font-size="11.5">PCR and LSI splits</text><text x="32" y="100" font-size="11.5">(gated, CC BY-NC-SA)</text>
+<text x="218" y="66" font-weight="bold">Text pipeline</text><text x="218" y="85" font-size="11.5">strip citations,</text><text x="218" y="100" font-size="11.5">sec_ tokens, bigrams</text>
+<text x="404" y="66" font-weight="bold">Inverted index</text><text x="404" y="85" font-size="11.5">BM25 and tf-idf,</text><text x="404" y="100" font-size="11.5">one per pool</text>
+<text x="590" y="66" font-weight="bold">Graphs</text><text x="590" y="85" font-size="11.5">PageRank, HITS,</text><text x="590" y="100" font-size="11.5">tested as priors</text>
+<text x="32" y="158" font-weight="bold">Kaggle T4 GPU</text><text x="32" y="177" font-size="11.5">student and teacher,</text><text x="32" y="192" font-size="11.5">BM25 hard negatives</text>
+<text x="218" y="158" font-weight="bold">Student encoder</text><text x="218" y="177" font-size="11.5">e5-small, MaxSim,</text><text x="218" y="192" font-size="11.5">pool chunk vectors</text>
+<text x="404" y="158" font-weight="bold">Statute classifiers</text><text x="404" y="177" font-size="11.5">NB, Rocchio, kNN,</text><text x="404" y="192" font-size="11.5">thresholds on dev</text>
+<rect x="20" y="222" width="718" height="30" fill="#eeeeee"/>
+<text x="32" y="242" font-size="11.5">Every setting (k1, b, K, fusion weight, thresholds, epochs) is chosen on dev; test is scored once per system.</text>
+<rect x="6" y="300" width="748" height="292" fill="none" stroke="#666" stroke-dasharray="5 4"/>
+<text x="20" y="322" font-weight="bold">Online: one query in the demo</text>
+<g fill="none" stroke="#000" stroke-width="1.2">
+<rect x="20" y="424" width="160" height="66"/>
+<rect x="206" y="338" width="160" height="66"/><rect x="206" y="424" width="160" height="66"/><rect x="206" y="510" width="160" height="66"/>
+<rect x="392" y="424" width="160" height="66"/>
+</g>
+<g fill="#eeeeee" stroke="#000" stroke-width="2"><rect x="578" y="424" width="160" height="66"/><rect x="578" y="510" width="160" height="66"/></g>
+<text x="32" y="446" font-weight="bold">Query</text><text x="32" y="465" font-size="11.5">a pasted judgment</text><text x="32" y="480" font-size="11.5">or the facts</text>
+<text x="218" y="360" font-weight="bold">BM25 top 200</text><text x="218" y="379" font-size="11.5">bigram index,</text><text x="218" y="394" font-size="11.5">tuned k1 and b</text>
+<text x="218" y="446" font-weight="bold">Neural top 200</text><text x="218" y="465" font-size="11.5">MaxSim over</text><text x="218" y="480" font-size="11.5">chunk vectors</text>
+<text x="218" y="532" font-weight="bold">Statute scores</text><text x="218" y="551" font-size="11.5">kNN, each statute</text><text x="218" y="566" font-size="11.5">vs its own threshold</text>
+<text x="404" y="446" font-weight="bold">Fusion</text><text x="404" y="465" font-size="11.5">weighted sum,</text><text x="404" y="480" font-size="11.5">weight from dev</text>
+<text x="590" y="446" font-weight="bold">Precedents</text><text x="590" y="465" font-size="11.5">top 10 with scores</text><text x="590" y="480" font-size="11.5">and passages</text>
+<text x="590" y="532" font-weight="bold">IPC sections</text><text x="590" y="551" font-size="11.5">with scores and</text><text x="590" y="566" font-size="11.5">thresholds</text>
+<g fill="none" stroke="#333" stroke-width="1.2" marker-end="url(#arrow)">
+<path d="M180 77H206"/><path d="M366 77H392"/><path d="M552 77H578"/>
+<path d="M100 110V136"/><path d="M180 169H206"/><path d="M472 110V136"/>
+<path d="M380 268V300"/>
+<path d="M180 457H206"/><path d="M193 457V371H206"/><path d="M193 457V543H206"/>
+<path d="M366 371H379V445H392"/><path d="M366 457H392"/><path d="M552 457H578"/><path d="M366 543H578"/>
+</g>
+<text x="390" y="290" font-size="11.5">loaded once at start-up</text>
+</g>
+</svg>
+<figcaption><b>Figure 1.</b> <span>The CaseTrail pipeline. Everything is built offline by the scripts in our repository; the demo only loads the results and answers queries.</span></figcaption>
+</figure>
+<p><b>Offline.</b> The text pipeline strips the leftover citations and builds the index terms, including legal section tokens and word bigrams. From these we build one inverted index per candidate pool, which BM25 and tf-idf use directly. The graphs (citations from the training labels, BM25 neighbours and section mentions) give PageRank and HITS scores, which we tested as extra ranking signals. The statute classifiers are trained on the LSI training split, and each statute's threshold is set on dev. The neural student and the cross-encoder teacher are trained on a Kaggle GPU; the student is also exported to INT8 ONNX, which makes it four times smaller for CPU use.</p>
+<p><b>Online.</b> A query (a full judgment, or a short description of the facts) goes through the same text pipeline. BM25 returns its top 200 candidates and the neural encoder returns its own top 200 by MaxSim. The two lists are fused with a weight chosen on dev, and the top 10 are shown with their BM25 score, neural score, PageRank and best-matching passages. The statute classifier scores all 100 IPC sections and shows the ones above their thresholds.</p>
+
+<h2>5. Methodology</h2>
+<h3>5.1 Text processing</h3>
+<p>Before anything else we remove leftover citations: the SCR header fields ("CITATION:", "CITATOR INFO") and reporter citations such as "AIR 1974 SC 753" that escaped the dataset's masking. Then we drop the mask tags (<code>&lt;NAME&gt;</code>, <code>&lt;ORG&gt;</code>, <code>&lt;CITATION&gt;</code>), lower-case the text and turn legal references into single tokens, so "Section 498-A IPC" becomes <code>sec_498a</code> and "Article 21" becomes <code>art_21</code>. We split on letters and digits, remove English stop words plus a short list of legal boilerplate words ("appellant", "learned", "counsel" and so on, picked from the most frequent words of the training judgments), and apply a light suffix stemmer in the style of Harman's S-stemmer (Harman, 1991). For PCR we also add word bigrams, such as <code>dowry__death</code>, as extra index terms.</p>
+
+<h3>5.2 Inverted index and BM25</h3>
+<p>The inverted index stores, for every term, the list of judgments that contain it and the term frequency in each, in flat numpy arrays. Scoring is term-at-a-time: for each query term we walk its postings list and add its contribution to a score per judgment, then take the top K with a heap. The BM25 score of judgment d for query q is</p>
+<div class="eq"><img src="eq/eq01_bm25.svg" alt="BM25 score and idf"><span class="no">(1)</span></div>
+<p>where k<sub>1</sub> controls how quickly repeated terms stop adding score and b controls length normalisation. The query weight w<sub>q</sub>(t) is either the term count in the query or simply 1. A query here is a whole judgment, so we also tried query reduction (keeping only the N query terms with the highest tf × idf) and passage scoring (scoring blocks of about 120 words and taking each judgment's best block). For comparison with the vector space model we use tf-idf cosine with w = (1 + log tf) × log(N / df).</p>
+
+<h3>5.3 Link analysis</h3>
+<p>PageRank with damping d = 0.85 is computed by power iteration until the L1 change is below 10<sup>-8</sup>. Judgments with no out-links share their score equally with all nodes:</p>
+<div class="eq"><img src="eq/eq02_pagerank.svg" alt="PageRank update"><span class="no">(2)</span></div>
+<p>HITS alternates the two updates below and normalises both vectors after each step:</p>
+<div class="eq"><img src="eq/eq03_hits.svg" alt="HITS updates"><span class="no">(3)</span></div>
+<p>The citation text is masked, so we cannot read a citation graph off the judgments. Instead we built three graphs: (1) a citation graph from the training labels only, where each training query points to the cases it cites; (2) a similarity graph where each judgment points to its 10 nearest neighbours by BM25; and (3) a bipartite graph between judgments and the legal references they mention. A graph score p(d) is added to BM25 as a prior, after standardising log p over the pool, with the weight λ chosen on dev:</p>
+<div class="eq"><img src="eq/eq04_prior.svg" alt="BM25 plus graph prior"><span class="no">(4)</span></div>
+<p>We also tried query-dependent HITS in the way Kleinberg intended: for each query, run HITS on the similarity links among its top 50 BM25 results and add the authority score in the same way.</p>
+
+<h3>5.4 Statute classifiers</h3>
+<p>All three classifiers are one-vs-rest over the 100 statutes. Multinomial Naive Bayes, for statute c and its complement, uses add-α smoothing and returns the log-odds:</p>
+<div class="eq"><img src="eq/eq05_naive_bayes.svg" alt="Naive Bayes log-odds"><span class="no">(5)</span></div>
+<p>Rocchio builds one centroid per statute, the mean of the unit-length tf-idf vectors of its training documents, and scores by cosine. kNN finds the k most similar training documents through the inverted index and adds up their similarities:</p>
+<div class="eq"><img src="eq/eq06_knn.svg" alt="kNN statute score"><span class="no">(6)</span></div>
+<p>A statute is predicted when its score passes its own threshold. Each threshold is chosen on dev to give that statute its best F1, which also gives the best macro-F1.</p>
+
+<h3>5.5 Neural model</h3>
+<p>A small transformer encoder turns each chunk of up to 256 tokens into one unit vector (mean pooling). A judgment keeps at most 32 chunks, spread over its whole length. Two judgments are compared with MaxSim, where every query chunk takes its best match in the candidate:</p>
+<div class="eq"><img src="eq/eq07_maxsim.svg" alt="MaxSim score"><span class="no">(7)</span></div>
+<p>For training, each example is a query, one judgment it cites (p) and four BM25 hard negatives (n): candidates that BM25 ranks high but that are not cited. The student learns with the InfoNCE loss, with temperature τ = 0.05; other candidates in the batch also act as negatives, except ones that are actually relevant to the query:</p>
+<div class="eq"><img src="eq/eq08_infonce.svg" alt="InfoNCE loss"><span class="no">(8)</span></div>
+<p>The teacher is a cross-encoder (bge-reranker-base) that reads a query chunk and a candidate chunk together. For each pair of judgments it scores 3 × 3 randomly chosen chunk pairs and keeps the highest score, and it is trained with binary cross-entropy (cited case = 1, BM25 hard negative = 0). In the distilled version the student also copies the teacher's score margins (Margin-MSE):</p>
+<div class="eq"><img src="eq/eq09_margin_mse.svg" alt="Margin-MSE loss"><span class="no">(9)</span></div>
+<p>The encoder is then exported to ONNX and its weights are stored as 8-bit integers with one scale per weight row (per-channel dynamic quantisation). Neural and BM25 rankings are combined either by reciprocal rank fusion, 1 / (k + rank), or by a weighted sum of their min-max normalised scores, with the weight chosen on dev.</p>
+
+<h3>5.6 Evaluation</h3>
+<p>For PCR we use micro-F1@K exactly as in U-CREAT. With R<sub>q</sub> the top K results and G<sub>q</sub> the cited cases of query q:</p>
+<div class="eq"><img src="eq/eq10_micro_f1.svg" alt="micro precision, recall and F1"><span class="no">(10)</span></div>
+<p>K is chosen on dev (from 1 to 20) and then fixed for test. We also report MAP and nDCG@10. For LSI we use macro-F1, the mean of the 100 per-statute F1 scores, which is the metric LeSICiN reports, plus micro-F1 and three kinds of accuracy. To check that a difference is real we use a paired randomisation test (Smucker et al., 2007): the outputs of the two systems are swapped at random for each query, 10,000 times, and the p-value is the share of swaps that give a difference at least as large as the real one.</p>
+
+<h2>6. Experimentation and Results</h2>
+<h3>6.1 Datasets</h3>
+<p>We used the IL-TUR benchmark (Joshi et al., 2024), downloaded from Hugging Face. All counts below match the dataset card. PCR judgments are long: the average candidate has 6,383 words in train and 8,718 in dev.</p>
+<p class="tcap">Table 1. <span>The two IL-TUR tasks we used.</span></p>
+<table>
+<thead><tr><th>Task</th><th>Split</th><th>Documents</th><th>Labels per document (mean)</th><th>Words per document (mean)</th></tr></thead>
+<tbody>
+<tr><td>PCR</td><td>train</td><td>827 queries, 4,320 candidates</td><td class="num">6.43 cited cases</td><td class="num">6,383 (candidates)</td></tr>
+<tr><td>PCR</td><td>dev</td><td>118 queries, 1,023 candidates</td><td class="num">8.25 cited cases</td><td class="num">8,718 (candidates)</td></tr>
+<tr><td>PCR</td><td>test</td><td>237 queries, 1,727 candidates</td><td class="num">7.30 cited cases</td><td class="num">7,080 (candidates)</td></tr>
+<tr><td>LSI</td><td>train</td><td>42,750</td><td class="num">3.71 statutes</td><td class="num">1,180</td></tr>
+<tr><td>LSI</td><td>dev</td><td>10,181</td><td class="num">3.92 statutes</td><td class="num">1,309</td></tr>
+<tr><td>LSI</td><td>test</td><td>13,019</td><td class="num">3.90 statutes</td><td class="num">1,268</td></tr>
+</tbody>
+</table>
+<p>While checking the data we found that the case citations in the PCR texts are masked as <code>&lt;CITATION&gt;</code>, but not fully. Some reporter citations survive in the body text, and some judgments still carry their SCR header with their own citation and a list of later cases that cite them. Just matching these strings finds 14.1%, 15.6% and 16.5% of the correct answers in train, dev and test, without any retrieval. We strip them before indexing. We also found that every query judgment is part of its own candidate pool, so we always remove the query from its own results.</p>
+
+<h3>6.2 Setup</h3>
+<p>All tuning was done on dev with a coordinate-wise grid search: first the query form (full text or top-N terms, raw or binary weights), stemming and bigrams, then k<sub>1</sub> and b, then passage scoring. The cut-off K of micro-F1@K was also chosen on dev, from 1 to 20. When a best value fell on the edge of the grid, we widened the grid. The final unigram BM25 uses k<sub>1</sub> = 10 and b = 1, and the bigram BM25 uses k<sub>1</sub> = 3, b = 1, binary query weights and the top 400 query terms. The classical parts ran on a laptop (Intel i5-12450H, 16 GB RAM). Neural training ran on a free Kaggle T4 GPU, and encoding the candidate pools with e5 ran on the laptop's GTX 1650 GPU.</p>
+<div class="two">
+<figure><img src="../../results/fig_bm25_grid.png" alt="Dev micro-F1@K of bigram BM25 over k1 and b">
+<figcaption><b>Figure 2.</b> <span>Dev micro-F1@K (%) of bigram BM25 for each pair of k<sub>1</sub> and b. The scores form a smooth plateau around b ≥ 0.9 and k<sub>1</sub> from 2 to 6, so the chosen values are not a lucky single point.</span></figcaption></figure>
+<figure><img src="../../results/fig_pcr_f1_vs_k.png" alt="Dev micro-F1 against K for four lexical systems">
+<figcaption><b>Figure 3.</b> <span>Dev micro-F1 (%) as K grows from 1 to 20. Precision falls and recall rises with K, so F1 peaks around K = 7 to 9. U-CREAT reports a similar peak between K = 3 and 7.</span></figcaption></figure>
+</div>
+
+<h3>6.3 Prior case retrieval results</h3>
+<p class="tcap">Table 2. <span>PCR results. P, R and F1 are micro-averaged at each system's K (chosen on dev); all values in %.</span></p>
+<table class="long">
+<thead><tr><th>System</th><th>K</th><th>dev F1</th><th>test P</th><th>test R</th><th>test F1</th><th>test MAP</th><th>test nDCG@10</th></tr></thead>
+<tbody>
+<tr class="group"><td colspan="8">Lexical</td></tr>
+<tr><td>BM25, textbook k1 = 1.2, b = 0.75</td><td class="num">8</td><td class="num">25.46</td><td class="num">26.05</td><td class="num">28.55</td><td class="num">27.25</td><td class="num">31.30</td><td class="num">40.65</td></tr>
+<tr><td>tf-idf cosine</td><td class="num">8</td><td class="num">36.83</td><td class="num">36.23</td><td class="num">39.71</td><td class="num">37.89</td><td class="num">47.26</td><td class="num">57.47</td></tr>
+<tr><td>BM25, tuned</td><td class="num">9</td><td class="num">38.03</td><td class="num">33.85</td><td class="num">41.73</td><td class="num">37.38</td><td class="num">47.68</td><td class="num">57.74</td></tr>
+<tr><td>BM25 + query reduction</td><td class="num">9</td><td class="num">36.56</td><td class="num">32.21</td><td class="num">39.71</td><td class="num">35.57</td><td class="num">45.16</td><td class="num">54.87</td></tr>
+<tr><td>BM25 on passages</td><td class="num">9</td><td class="num">34.59</td><td class="num">29.91</td><td class="num">36.88</td><td class="num">33.03</td><td class="num">39.73</td><td class="num">49.23</td></tr>
+<tr><td>BM25 + bigrams</td><td class="num">7</td><td class="num">45.25</td><td class="num">43.34</td><td class="num">41.56</td><td class="num">42.43</td><td class="num">53.32</td><td class="num">64.81</td></tr>
+<tr class="group"><td colspan="8">Added to BM25 + bigrams</td></tr>
+<tr><td>+ PageRank, citation graph</td><td class="num">7</td><td class="num">45.58</td><td class="num">42.62</td><td class="num">40.87</td><td class="num">41.72</td><td class="num">53.05</td><td class="num">64.58</td></tr>
+<tr><td>+ PageRank, similarity graph</td><td class="num">7</td><td class="num">45.25</td><td class="num">43.34</td><td class="num">41.56</td><td class="num">42.43</td><td class="num">53.32</td><td class="num">64.81</td></tr>
+<tr><td>+ HITS hub, section graph</td><td class="num">7</td><td class="num">45.25</td><td class="num">43.34</td><td class="num">41.56</td><td class="num">42.43</td><td class="num">53.32</td><td class="num">64.81</td></tr>
+<tr><td>+ query-dependent HITS</td><td class="num">7</td><td class="num">45.25</td><td class="num">43.34</td><td class="num">41.56</td><td class="num">42.43</td><td class="num">53.32</td><td class="num">64.81</td></tr>
+<tr><td>+ cross-encoder re-rank of the top 50</td><td class="num">20</td><td class="num">14.04</td><td class="num">9.73</td><td class="num">26.65</td><td class="num">14.25</td><td class="num">12.48</td><td class="num">12.99</td></tr>
+<tr class="group"><td colspan="8">Neural only</td></tr>
+<tr><td>MiniLM, zero-shot</td><td class="num">7</td><td class="num">33.57</td><td class="num">33.82</td><td class="num">32.43</td><td class="num">33.11</td><td class="num">40.64</td><td class="num">50.58</td></tr>
+<tr><td>MiniLM, INT8</td><td class="num">7</td><td class="num">32.80</td><td class="num">33.39</td><td class="num">32.02</td><td class="num">32.69</td><td class="num">40.67</td><td class="num">50.89</td></tr>
+<tr><td>e5, zero-shot</td><td class="num">8</td><td class="num">35.26</td><td class="num">33.39</td><td class="num">36.59</td><td class="num">34.91</td><td class="num">44.45</td><td class="num">53.98</td></tr>
+<tr><td>e5, trained (our student)</td><td class="num">8</td><td class="num">35.79</td><td class="num">33.02</td><td class="num">36.18</td><td class="num">34.53</td><td class="num">43.57</td><td class="num">53.72</td></tr>
+<tr class="group"><td colspan="8">Fused with BM25 + bigrams</td></tr>
+<tr><td>RRF, MiniLM</td><td class="num">9</td><td class="num">42.36</td><td class="num">36.24</td><td class="num">44.68</td><td class="num">40.02</td><td class="num">51.21</td><td class="num">60.91</td></tr>
+<tr><td>Weighted, MiniLM</td><td class="num">7</td><td class="num">45.47</td><td class="num">43.64</td><td class="num">41.85</td><td class="num">42.73</td><td class="num">55.51</td><td class="num">65.73</td></tr>
+<tr><td>Weighted, MiniLM INT8</td><td class="num">7</td><td class="num">45.47</td><td class="num">43.82</td><td class="num">42.02</td><td class="num">42.90</td><td class="num">55.46</td><td class="num">65.61</td></tr>
+<tr><td>Weighted, e5 zero-shot</td><td class="num">8</td><td class="num">45.80</td><td class="num">40.82</td><td class="num">44.74</td><td class="num">42.69</td><td class="num">56.33</td><td class="num">65.84</td></tr>
+<tr class="best"><td>Weighted, our trained student</td><td class="num">7</td><td class="num">45.91</td><td class="num">44.36</td><td class="num">42.54</td><td class="num">43.43</td><td class="num">56.42</td><td class="num">66.21</td></tr>
+</tbody>
+</table>
+<p>Tuning made the biggest difference: the same BM25 goes from 27.25 to 37.38 once k<sub>1</sub> and b are tuned on dev. Bigrams give the next big jump, to 42.43 (+5.05 points, p = 0.0001). Neither query reduction nor passage scoring helped, which surprised us, since both are common ways of handling long queries. Our guess is that with a well tuned k<sub>1</sub>, the full judgment is a better query than any short summary of it.</p>
+<p>The graph signals did not help. For three of the four, dev chose a weight of zero. The citation PageRank gained 0.33 points on dev but lost 0.71 on test, and that change is not significant (p = 0.057). We think the reason is that BM25 with bigrams already captures what the graphs know: two judgments that cite the same cases usually also share a lot of wording.</p>
+<p>The zero-shot MiniLM encoder is clearly weaker than BM25 on its own, but adding it with a small weight (0.1, chosen on dev) raises MAP by 2.20 points (p = 0.0001). Micro-F1@K moves only 0.30 points (not significant), so the neural score mostly reorders results below the cut-off. The INT8 model behaves the same as the full one (p = 0.22).</p>
+<p>The e5 student we trained on Kaggle does a little better. Fused with bigram BM25 it reaches 43.43 test micro-F1@K, 1.00 point above BM25 alone (p = 0.046), and MAP goes up by 3.10 points (p = 0.0001). It is also above the MiniLM fusion (+0.71, p = 0.041). Most of this gain comes from e5 itself and not from our training, though. The untrained e5 fused in the same way reaches 42.69, and the 0.74 point difference between the two is not significant (p = 0.13). On its own, the trained student beat zero-shot e5 on dev (35.79 against 35.26) but was slightly worse on test (34.53 against 34.91).</p>
+<p><b>Cross-encoder teacher.</b> The teacher did not learn. Its training loss stayed at 0.695 for the whole epoch, which is about ln 2, the loss of a model that always answers 0.5. Re-ranking the BM25 top 50 with it drops test micro-F1@K from 42.43 to 14.25. Distilling it into the student therefore only hurt: after each epoch the distilled student scored between 31.94 and 33.51 on dev, below the 35.26 it started from, so the saved model is just the untrained e5. We think the problem was the chunk pairs. Each training example showed the teacher 3 × 3 random 256-token chunks from two judgments that are often over 5,000 words long, and two random parts rarely contain the legal point that links the cases, so the labels looked like noise. We wrote a second version that picks the most similar chunk pairs with e5, but we could not finish running it on Kaggle, so it is not part of these results.</p>
+<p><b>Effect of the citation leak.</b> Running the same bigram BM25 without stripping the leftover citations gives test F1 = 42.67 instead of 42.43. So for BM25 the leak is small (0.24 points), even though exact string matching alone finds about 16% of the answers.</p>
+
+<h3>6.4 Statute identification results</h3>
+<p class="tcap">Table 3. <span>LSI results on test (100 IPC sections), in %. Thresholds tuned per statute on dev.</span></p>
+<table>
+<thead><tr><th>Method</th><th>dev macro-F1</th><th>macro-P</th><th>macro-R</th><th>macro-F1</th><th>micro-F1</th><th>subset acc.</th><th>sample acc.</th><th>Hamming acc.</th></tr></thead>
+<tbody>
+<tr><td>Rocchio</td><td class="num">21.52</td><td class="num">18.58</td><td class="num">24.86</td><td class="num">19.26</td><td class="num">25.33</td><td class="num">0.00</td><td class="num">13.02</td><td class="num">90.91</td></tr>
+<tr><td>Naive Bayes (α = 0.01)</td><td class="num">28.35</td><td class="num">24.54</td><td class="num">34.53</td><td class="num">27.12</td><td class="num">36.01</td><td class="num">1.08</td><td class="num">21.99</td><td class="num">93.42</td></tr>
+<tr><td>Statute cross-attention (3 seeds)</td><td class="num">28.97</td><td class="num">23.86</td><td class="num">36.07</td><td class="num">27.14 ± 0.09</td><td class="num">36.12 ± 0.48</td><td class="num">not run</td><td class="num">not run</td><td class="num">not run</td></tr>
+<tr class="best"><td>kNN (k = 50)</td><td class="num">34.04</td><td class="num">31.80</td><td class="num">35.36</td><td class="num">31.73</td><td class="num">39.88</td><td class="num">2.59</td><td class="num">25.65</td><td class="num">94.43</td></tr>
+</tbody>
+</table>
+<p>kNN is the best of the classical methods, ahead of Naive Bayes by 4.61 points and of Rocchio by 12.46, and all three differences are significant (p = 0.001 with 1,000 permutations, the smallest value that test can give). Rocchio is weak because one centroid per statute cannot cover very different kinds of cases that share a section; Section 34 (common intention), for example, appears in murders, riots and frauds alike. kNN keeps the individual training documents and avoids this.</p>
+<p>The statute cross-attention model, trained on Kaggle with three seeds, reaches 27.14 ± 0.09 macro-F1 on test. That is the same as Naive Bayes (27.12) and well below kNN. Its dev macro-F1 was still rising at its last epoch for all three seeds (from about 11 after epoch 1 to about 29 after epoch 15), so it was probably undertrained. Even so, with 42,750 training documents, a vote over the most similar documents was very hard for it to beat.</p>
+<p>The accuracy columns show why accuracy is not a good main metric here. Hamming accuracy is above 90% for every method, only because almost all (document, statute) decisions are an easy "no". Exact-match accuracy is below 3%, because getting all three or four sections exactly right is very hard. Macro-F1 treats rare and common statutes equally, which is why it is the benchmark's metric.</p>
+
+<h3>6.5 Comparison with published work</h3>
+<p class="tcap">Table 4. <span>Our best systems against the published results on the same IL-TUR test splits (published numbers from Joshi et al., 2024 and 2023).</span></p>
+<table>
+<thead><tr><th>Task</th><th>System</th><th>Metric</th><th>Score (%)</th></tr></thead>
+<tbody>
+<tr><td>PCR</td><td>BM25, word level (published)</td><td>micro-F1@K</td><td class="num">13.85</td></tr>
+<tr><td>PCR</td><td>BM25, bigram (published)</td><td>micro-F1@K</td><td class="num">28.59</td></tr>
+<tr><td>PCR</td><td>Event-filtered docs + BM25 quad-gram (published best)</td><td>micro-F1@K</td><td class="num">39.15</td></tr>
+<tr><td>PCR</td><td>Ours: BM25 + bigrams</td><td>micro-F1@K</td><td class="num">42.43</td></tr>
+<tr class="best"><td>PCR</td><td>Ours: BM25 + bigrams fused with our trained e5 student</td><td>micro-F1@K</td><td class="num">43.43</td></tr>
+<tr><td>LSI</td><td>LeSICiN (published best)</td><td>macro-F1</td><td class="num">28.08</td></tr>
+<tr class="best"><td>LSI</td><td>Ours: kNN</td><td>macro-F1</td><td class="num">31.73</td></tr>
+</tbody>
+</table>
+<p>Our bigram BM25 is above the best published PCR system, and our kNN is above LeSICiN. We want to be careful with this comparison. The published BM25 numbers are much lower than ours with the same model, so the papers most likely used different preprocessing or untuned k<sub>1</sub> and b, and we cannot be sure the setups are exactly equal. What we can say is that both our numbers were obtained without ever looking at the test labels.</p>
+
+<h3>6.6 Error analysis</h3>
+<p>For bigram BM25, 20 of the 237 test queries get none of their cited cases in the top 7. These queries are shorter than usual (median 3,223 words against 4,653 for all queries), so they give BM25 less text to match. For statutes, the most common mistakes involve sections that are often charged together: Section 302 (murder) missed while 506 (criminal intimidation) is predicted instead, in 205 test documents; 307 missed with 506 predicted, in 199; and 149 (common object) missed with 34 (common intention) predicted, in 198. Sections 149 and 34 are also close in meaning, since both make a group responsible for one member's act. Per-statute F1 for kNN ranges from 34.5 (Section 147) to 69.9 (Section 302) among the ten most frequent statutes.</p>
+<div class="two">
+<figure><img src="../../results/fig_lsi_per_statute.png" alt="Test F1 of the ten most frequent statutes for kNN">
+<figcaption><b>Figure 4.</b> <span>Test F1 (%) of kNN for the ten most frequent IPC sections. Section 302 (murder) is the easiest; group offences such as 147 (rioting) are the hardest.</span></figcaption></figure>
+<figure><img src="../../results/fig_lsi_methods.png" alt="Test macro-F1 and micro-F1 of the four LSI methods">
+<figcaption><b>Figure 5.</b> <span>Test macro-F1 and micro-F1 (%) of the four LSI methods; the dashed line is LeSICiN's published macro-F1.</span></figcaption></figure>
+</div>
+
+<h3>6.7 Efficiency</h3>
+<p>The INT8 MiniLM encoder is 23.0 MB, against 90.4 MB for the full model. Its vectors stay very close to the full model's: the mean cosine similarity is 0.993 on 200 dev chunks (minimum 0.985). Our first export, with one scale per weight matrix, reached only 0.946, so we switched to one scale per row. Encoding one judgment of 26 chunks takes a median of 1,029 ms with INT8, against 1,204 ms in PyTorch.</p>
+<p>Our trained e5 student has twice as many layers as MiniLM. Its INT8 version is 34.1 MB, with a mean cosine of 0.9945 to the full model, and it takes 1,749 ms for the same judgment, against 1,999 ms in PyTorch. So it misses our targets of about 30 MB and one second. In the demo we use the student in PyTorch, so a full judgment takes about 2 s with the neural signal on, almost all of it spent encoding the query chunks; a short description of the facts has only one or two chunks and is much faster.</p>
+
+<h2>7. Conclusions and Limitations</h2>
+<p>We built CaseTrail, a system that finds precedents and predicts IPC sections for Indian Supreme Court judgments and explains each result. The main lesson for us was how far the classical methods go when they are tuned properly. BM25 with bigrams, cleaned text and k<sub>1</sub> and b chosen on dev reached 42.43 micro-F1@K on the PCR test set, and a simple kNN classifier reached 31.73 macro-F1 on statutes. Both are above the best published numbers on IL-TUR, although we cannot be sure the published setups were exactly the same as ours. We also found and removed a citation leak in the data, and showed that the link analysis signals we tried did not add anything on top of BM25 with bigrams. The neural encoders were weaker than BM25 when used alone, but fusing our trained e5 student with BM25 gave our best PCR system, 43.43 micro-F1@K, a significant gain of 1.00 point. Most of that gain comes from e5 itself rather than from our training. Our cross-encoder teacher did not learn at all, so distillation did not help, and the statute attention model only matched Naive Bayes.</p>
+<p>The work has several limitations:</p>
+<ul>
+<li>The dataset uses the Indian Penal Code, which was replaced by the Bharatiya Nyaya Sanhita from 1 July 2024. A real tool would need a mapping from IPC sections to the new ones.</li>
+<li>The judgments are in English and mostly from the Supreme Court, and party names are masked, so we cannot say how the system does on High Court or regional-language judgments.</li>
+<li>Our preprocessing (citation stripping, stop words, bigrams, tuned k<sub>1</sub> and b) is different from that of the published baselines, so the comparison is fair in protocol but not identical in setup.</li>
+<li>The neural part is weaker than we planned. The teacher never learned, its improved version was not run to the end, and the trained student is not significantly better than the untrained e5. Each retrieval model was trained only once, on a free GPU; only the statute attention model has three seeds.</li>
+<li>With the neural signal on, a full-judgment query takes about 2 s on our laptop, above our one-second target, and the INT8 student is 34.1 MB, above our 30 MB target. BM25 on its own is well under a second.</li>
+<li>CaseTrail is a research and learning aid; a lawyer still has to read and judge every result.</li>
+</ul>
+<p>For future work we would like to finish the teacher that trains on the most similar chunk pairs and distil it into the student again, train the statute attention model for longer, try retrieval based on the facts only (most of a judgment is legal argument), and map IPC sections to BNS.</p>
+
+<h2>References</h2>
+<ol class="refs">
+<li>Brin, S. and Page, L., 1998. The anatomy of a large-scale hypertextual Web search engine. <i>Computer Networks and ISDN Systems</i>, 30(1–7), pp.107–117.</li>
+<li>Cormack, G.V., Clarke, C.L. and Büttcher, S., 2009, July. Reciprocal rank fusion outperforms Condorcet and individual rank learning methods. In <i>Proceedings of the 32nd International ACM SIGIR Conference on Research and Development in Information Retrieval</i> (pp. 758–759).</li>
+<li>Harman, D., 1991. How effective is suffixing? <i>Journal of the American Society for Information Science</i>, 42(1), pp.7–15.</li>
+<li>Hofstätter, S., Althammer, S., Schröder, M., Sertkan, M. and Hanbury, A., 2020. Improving efficient neural ranking models with cross-architecture knowledge distillation. <i>arXiv preprint arXiv:2010.02666</i>.</li>
+<li>Joshi, A., Paul, S., Sharma, A., Goyal, P., Ghosh, S. and Modi, A., 2024, August. IL-TUR: Benchmark for Indian legal text understanding and reasoning. In <i>Proceedings of the 62nd Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)</i> (pp. 11460–11499).</li>
+<li>Joshi, A., Sharma, A., Tanikella, S.K. and Modi, A., 2023, July. U-CREAT: Unsupervised Case Retrieval using Events extrAcTion. In <i>Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers)</i> (pp. 13899–13915).</li>
+<li>Karpukhin, V., Oguz, B., Min, S., Lewis, P., Wu, L., Edunov, S., Chen, D. and Yih, W.T., 2020, November. Dense passage retrieval for open-domain question answering. In <i>Proceedings of the 2020 Conference on Empirical Methods in Natural Language Processing (EMNLP)</i> (pp. 6769–6781).</li>
+<li>Khattab, O. and Zaharia, M., 2020, July. ColBERT: Efficient and effective passage search via contextualized late interaction over BERT. In <i>Proceedings of the 43rd International ACM SIGIR Conference on Research and Development in Information Retrieval</i> (pp. 39–48).</li>
+<li>Kleinberg, J.M., 1999. Authoritative sources in a hyperlinked environment. <i>Journal of the ACM</i>, 46(5), pp.604–632.</li>
+<li>Manning, C.D., Raghavan, P. and Schütze, H., 2008. <i>Introduction to Information Retrieval</i>. Cambridge University Press.</li>
+<li>Paul, S., Goyal, P. and Ghosh, S., 2022, June. LeSICiN: A heterogeneous graph-based approach for automatic legal statute identification from Indian legal documents. In <i>Proceedings of the AAAI Conference on Artificial Intelligence</i> (Vol. 36, No. 10, pp. 11139–11146).</li>
+<li>Reimers, N. and Gurevych, I., 2019, November. Sentence-BERT: Sentence embeddings using Siamese BERT-networks. In <i>Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing and the 9th International Joint Conference on Natural Language Processing (EMNLP-IJCNLP)</i> (pp. 3982–3992).</li>
+<li>Robertson, S. and Zaragoza, H., 2009. The probabilistic relevance framework: BM25 and beyond. <i>Foundations and Trends in Information Retrieval</i>, 3(4), pp.333–389.</li>
+<li>Smucker, M.D., Allan, J. and Carterette, B., 2007, November. A comparison of statistical significance tests for information retrieval evaluation. In <i>Proceedings of the 16th ACM Conference on Information and Knowledge Management</i> (pp. 623–632).</li>
+<li>Wang, L., Yang, N., Huang, X., Jiao, B., Yang, L., Jiang, D., Majumder, R. and Wei, F., 2022. Text embeddings by weakly-supervised contrastive pre-training. <i>arXiv preprint arXiv:2212.03533</i>.</li>
+</ol>
+
+<h2>Declaration of AI Use</h2>
+<p>We used <b>Claude Code</b> (an AI coding agent by Anthropic) to write code, tests and documentation, to run the experiments and to help draft this report, under our direction. We chose the topic and the idea, made the design decisions, ran the neural training on Kaggle, and reviewed the code and the results. Every number in this report, the README and the demo was produced by the scripts in our repository on the real IL-TUR data, and every setting was chosen on the dev splits only.</p>
+
+</body>
+</html>

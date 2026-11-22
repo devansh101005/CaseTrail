@@ -216,8 +216,17 @@ docs/               design (HLD, LLD), decisions, data, evaluation protocol, IR 
 - **Models:** `sentence-transformers/all-MiniLM-L6-v2` (Apache-2.0), `intfloat/e5-small-v2` (MIT) and `BAAI/bge-reranker-base` (MIT; the teacher, used on Kaggle only).
 - **Limitations:** the dataset uses the Indian Penal Code, which was replaced by the Bharatiya Nyaya Sanhita from 1 July 2024; the judgments are English-only and mostly from the Supreme Court; party names are masked in the data.
 
+## Report
+The report is `docs/report/CaseTrail_report.pdf`, printed from `docs/report/report.html`. Its figures come from `results/`, and its formulas are SVGs drawn by `python scripts/render_equations.py`. To rebuild the PDF on Windows:
+```powershell
+python scripts/make_plots.py; python scripts/render_equations.py
+& "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" --headless --no-pdf-header-footer `
+  --print-to-pdf="$PWD\docs\report\CaseTrail_report.pdf" "file:///$($PWD -replace '\\','/')/docs/report/report.html"
+```
+(Chrome takes the same flags.)
+
 ## Documents
-`PLAN.md` (goals, rubric) · `ROADMAP.md` (phases) · `docs/HLD.md` · `docs/LLD.md` · `docs/DECISIONS.md` (every choice and change, dated) · `docs/DATA.md` · `docs/EVALUATION.md` · `docs/IR_CONCEPTS.md` (lecture → code map) · `docs/FRONTEND_GUIDE.md` · `docs/REPORT_FORMAT.md` · `docs/SUBMISSION.md`
+`docs/report/` (the report) · `PLAN.md` (goals, rubric) · `ROADMAP.md` (phases) · `docs/HLD.md` · `docs/LLD.md` · `docs/DECISIONS.md` (every choice and change, dated) · `docs/DATA.md` · `docs/EVALUATION.md` · `docs/IR_CONCEPTS.md` (lecture → code map) · `docs/FRONTEND_GUIDE.md` · `docs/REPORT_FORMAT.md` · `docs/SUBMISSION.md`
 
 ## Licence
 The code is released under the **MIT licence** (see `LICENSE`). The IL-TUR data, the pretrained models and the libraries keep their own licences; the data is used for non-commercial teaching and research, as its licence requires.
