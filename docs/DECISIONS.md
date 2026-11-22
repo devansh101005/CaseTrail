@@ -48,11 +48,11 @@ Each decision: **what we chose**, the alternatives, **why**, and the **trade-off
 The final table in the report shows the actual numbers from `results/efficiency.csv` and `results/pcr_metrics.csv`.
 
 ## D. Open decisions (resolve during the phases)
-- [ ] Student model choice (MiniLM-L6 vs e5-small vs a small legal model) — decide in P5 on dev quality × size.
+- [x] Student model choice → **e5-small-v2** (zero-shot dev micro-F1@K 0.3526 vs MiniLM-L6 0.3357, Kaggle epoch 0; change log 2026-11-22).
 - [ ] Teacher model choice — decide in P5 on Kaggle GPU memory.
 - [x] Citation graph available? (P1) → **No full citation graph.** Citations are masked as `<CITATION>`. Only partial leftovers survive (reporter strings, SCR headers), and they are exactly the relevance labels, so we strip them (see change log). P3 builds **G2** (judgment ↔ section-mention bipartite graph; PCR texts keep section references) and **G3** (BM25 kNN similarity graph). A "partial G1" made from leftover citations is **not** used for ranking: queries are part of every candidate pool, so its edges would include query → relevant-candidate links.
 - [x] Stemming on/off (P2, dev) → **on** (our light S-stemmer): best unigram BM25 dev µF1@K 0.3255 with stemming vs 0.3214 without (`results/pcr_dev_tuning.csv`). A small but consistent gain, so it is used everywhere (PCR and LSI).
-- [ ] Dataset files allowed in the ZIP? (P9, licence + professor).
+- [x] Dataset files allowed in the ZIP? → **No** (decided by Devansh, 2026-11-22). The ZIP gets the download script, the exact split ids and instructions; IL-TUR is gated and CC BY-NC-SA, so redistributing it is avoided.
 
 ## Change log
 | Date | Change | Reason |
@@ -83,3 +83,5 @@ The final table in the report shows the actual numbers from `results/efficiency.
 | 2026-11-21 | Demo shows "cited in the real judgment" when the pasted text is an IL-TUR test query | Display only (benchmark labels are never used for ranking); lets the audience see hits and misses live |
 | 2026-11-22 | INT8 export uses **per-channel** dynamic quantisation | Per-tensor INT8 failed the LLD fidelity check (mean cosine vs fp32 0.946 on 200 dev chunks); per-channel gave 0.993 (min 0.985) at the same 23 MB. Measured with a probe of five settings; chosen on dev chunks only |
 | 2026-11-22 | Query terms that occur only in the query judgment itself (df = 1, because benchmark queries are also pool members) are **kept** in ranking, but hidden in the demo's explanation panel | Found while checking the demo. A dev-only probe (bigram BM25 at the tuned k1, b; top 200–1600 terms; with/without dropping df < 2) moved dev micro-F1@K by at most 0.4 points (0.4525 → 0.4549), within noise on 118 queries, so the tuned pipeline stays. The same probe shows 800 terms at the final k1, b scoring 0.4569, a limit of the coordinate-wise search (top_terms was chosen at default k1, b) |
+| 2026-11-22 | **Student = intfloat/e5-small-v2**, chosen on dev by the Kaggle epoch-0 run: zero-shot dev micro-F1@K 0.3526 vs 0.3357 for MiniLM-L6 | Resolves the open "student model choice" decision on dev. MiniLM scored 0.3357 on both the laptop and Kaggle, so the pipeline reproduces across machines. Logs: `results/training_student_zeroshot_*.json` (come back with the Kaggle outputs). e5 was scored without its "query: " prefix, the same text treatment as MiniLM |
+| 2026-11-22 | Kaggle batch sizes: teacher 2 judgment pairs (18 chunk pairs × 512 tokens), students 8 queries | The teacher at batch 8 (72 sequences of 512 tokens + AdamW states for 278M weights) ran out of the T4's memory (CUDA OOM at 14.48 / 14.56 GiB). Smaller batches see the same data and epochs in more steps |

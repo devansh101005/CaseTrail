@@ -102,6 +102,8 @@ pytest -q
 ```
 If Windows Smart App Control blocks a scikit-learn DLL, keep `scikit-learn==1.7.2` (already pinned; it is used only in tests).
 
+**Windows: clone into a short path** (for example `C:\dev\CaseTrail`). PyTorch installs files with very deep paths, and under a long folder path the install fails with *"No such file or directory … Windows Long Path support"*. The alternative is to enable long paths in Windows.
+
 ### Data access (one-time)
 IL-TUR is gated on Hugging Face:
 1. Accept the conditions at https://huggingface.co/datasets/Exploration-Lab/IL-TUR.

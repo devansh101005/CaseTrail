@@ -53,6 +53,9 @@ kaggle.json
 *token*.txt
 .huggingface/
 
+# ---------- Private working docs (viva prep, report drafts); the final report PDF goes in the ZIP ----------
+docs/private/
+
 # ---------- Logs ----------
 *.log
 

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import EvidenceTiles from "@/components/EvidenceTiles";
 import Hero from "@/components/Hero";
+import LandingTrail from "@/components/LandingTrail";
 import MechanismCards from "@/components/MechanismCards";
 import Ticker from "@/components/Ticker";
 
@@ -9,6 +10,7 @@ export default function Home() {
     <>
       <Hero />
       <Ticker />
+      <LandingTrail />
       <MechanismCards />
       <EvidenceTiles />
       <section className="bg-ink text-on-ink">

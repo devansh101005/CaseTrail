@@ -73,8 +73,8 @@ Mark items `[x]` when done.
 - [ ] README: setup, run, data, what works / planned, results table generated from `results/`
 - [ ] `docs/AI_USE.md` final, `docs/DATA.md` credits final
 - [ ] Clean-folder reproduction test from a fresh clone
-- [ ] ZIP per `docs/SUBMISSION.md`
-- [ ] Demo + viva rehearsal
+- [ ] ZIP per `docs/SUBMISSION.md` — *decided 2026-11-22: the IL-TUR files are NOT put in the ZIP; include `scripts/download_data.py`, the split ids and a note on how to get the data*
+- [ ] Demo + viva rehearsal — *NOT DONE YET (2026-11-22): Devansh will rehearse later, including one run with Wi-Fi off*
 **Done when:** ZIP built and checked; demo rehearsed.
 
 ---
