@@ -1,4 +1,4 @@
-// The only file that talks to the backend: plain fetch + JSON (CLAUDE.md, FRONTEND_GUIDE section 1).
+// The only file that talks to the backend: plain fetch + JSON (FRONTEND_GUIDE section 1).
 import type { Example, Health, ResultsPayload, SearchResponse, StatuteResponse } from "./types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://127.0.0.1:8000";

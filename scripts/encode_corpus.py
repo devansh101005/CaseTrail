@@ -26,6 +26,9 @@ def dense_folder(model_name: str, split: str):
 
 def encode_pool(model_dir, model_name: str, split: str, batch_size: int, onnx_path=None, prefix_key: str = ""):
     tokenizer, model = load_encoder(str(model_dir))
+    # A GPU only speeds up encoding (same fp32 vectors); ONNX runs always use the CPU
+    device = "cuda" if torch.cuda.is_available() and not onnx_path else "cpu"
+    model.to(device)
     session = onnx_session(onnx_path) if onnx_path else None
     prefix = PREFIX.get(prefix_key or model_dir.name, "")
     pool = load_pcr(split)["candidates"]
@@ -49,8 +52,9 @@ def encode_pool(model_dir, model_name: str, split: str, batch_size: int, onnx_pa
         # model_dir / onnx: the engine must encode queries with exactly the encoder that built this index
         json.dump({"doc_names": names, "model_dir": model_dir.as_posix(), "onnx": str(onnx_path) if onnx_path else None,
                    "prefix": prefix, "chunks": len(chunks), "encode_seconds": round(seconds, 1),
-                   "chunks_per_second": round(len(chunks) / seconds, 1), "threads": torch.get_num_threads()}, f)
-    print(f"  done in {seconds:.0f} s ({len(chunks) / seconds:.1f} chunks/s on CPU)")
+                   "chunks_per_second": round(len(chunks) / seconds, 1), "threads": torch.get_num_threads(),
+                   "device": device}, f)
+    print(f"  done in {seconds:.0f} s ({len(chunks) / seconds:.1f} chunks/s on {device})")
 
 
 def main():

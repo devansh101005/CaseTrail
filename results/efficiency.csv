@@ -13,3 +13,17 @@ efficiency,minilm_onnx_int8,dev,query_encode_p95_ms,1226.1123,26
 efficiency,minilm_onnx_int8,dev,query_chunks,26,26
 efficiency,minilm_onnx_int8,dev,cosine_vs_fp32_mean,0.9933,26
 efficiency,minilm_onnx_int8,dev,cosine_vs_fp32_min,0.9851,26
+efficiency,student_plain_torch_fp32,dev,size_mb,133.1133,26
+efficiency,student_plain_torch_fp32,dev,query_encode_median_ms,1998.9474,26
+efficiency,student_plain_torch_fp32,dev,query_encode_p95_ms,2171.8305,26
+efficiency,student_plain_torch_fp32,dev,query_chunks,26,26
+efficiency,student_plain_onnx_fp32,dev,size_mb,133.1133,26
+efficiency,student_plain_onnx_fp32,dev,query_encode_median_ms,2604.6901,26
+efficiency,student_plain_onnx_fp32,dev,query_encode_p95_ms,2731.8694,26
+efficiency,student_plain_onnx_fp32,dev,query_chunks,26,26
+efficiency,student_plain_onnx_int8,dev,size_mb,34.0657,26
+efficiency,student_plain_onnx_int8,dev,query_encode_median_ms,1749.1131,26
+efficiency,student_plain_onnx_int8,dev,query_encode_p95_ms,2017.7407,26
+efficiency,student_plain_onnx_int8,dev,query_chunks,26,26
+efficiency,student_plain_onnx_int8,dev,cosine_vs_fp32_mean,0.9945,26
+efficiency,student_plain_onnx_int8,dev,cosine_vs_fp32_min,0.9891,26

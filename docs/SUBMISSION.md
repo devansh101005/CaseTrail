@@ -19,7 +19,7 @@ CSD358_Devansh_Anamika_Abhinav/
 - [ ] Report follows `docs/REPORT_FORMAT.md` (≥7 references, comparison with a published paper)
 - [ ] Work division and AI-use declaration in the report
 - [ ] Fresh-clone reproduction test passed
-- [ ] GitHub repo is public (or shared with the professor) and pushed by Devansh
+- [ ] GitHub repo is public (or shared with the professor) and fully pushed
 - [ ] No tokens, `.env`, `data/`, `models/`, `node_modules/` inside `code/`
 
 ## Grading reminder

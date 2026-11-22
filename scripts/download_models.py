@@ -12,7 +12,7 @@ from casetrail import config
 STUDENTS = ["sentence-transformers/all-MiniLM-L6-v2", "intfloat/e5-small-v2"]
 PATTERNS = ["config.json", "tokenizer.json", "tokenizer_config.json", "vocab.txt", "special_tokens_map.json",
             "model.safetensors"]
-MAX_TOTAL_MB = 1000  # CLAUDE.md rule 7
+MAX_TOTAL_MB = 1000  # stop before downloading more than ~1 GB
 
 
 def local_dir(repo_id: str):

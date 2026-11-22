@@ -1,4 +1,4 @@
-"""Regenerate the README results table from results/ (CLAUDE.md rule 2: no hand-typed numbers).
+"""Regenerate the README results table from results/ (no hand-typed numbers).
 
 Replaces the text between <!-- results:start --> and <!-- results:end --> in README.md.
 """

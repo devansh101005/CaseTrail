@@ -2,7 +2,7 @@
 
 **Submission:** ZIP named `CSD358_Devansh_Anamika_Abhinav` with report PDF + GitHub link, source code, dataset (see `docs/SUBMISSION.md`).
 
-Each phase ends in a **working, tested state**. After every phase Claude Code: runs `pytest -q`, summarises what changed in plain English, updates `docs/IR_CONCEPTS.md`, and **suggests** a commit message. Devansh commits. Claude never commits.
+Each phase ends in a **working, tested state**. After every phase `pytest -q` must pass, I write a short plain-English summary, update `docs/IR_CONCEPTS.md` and commit.
 
 Mark items `[x]` when done.
 
@@ -44,9 +44,9 @@ Mark items `[x]` when done.
 **Done when:** three classical methods compared with the LeSICiN baseline (28.08 macro-F1).
 
 ## P5 — Neural retriever (train on Kaggle, infer on laptop)
-- [ ] `notebooks/train_retriever.ipynb`: bi-encoder, contrastive loss, **BM25 hard negatives**, chunking for long judgments — *run 1 done on Kaggle 2026-11-22: the distilled student never beat epoch 0 on dev (pretrained e5 kept); run 2 (selected chunks) pending*
-- [ ] Teacher cross-encoder trained/fine-tuned on PCR train pairs; **distil** into the student — *run 1 (random chunk pairs) stayed at chance; run 2 (`notebooks/train_teacher_selected.ipynb`, selected chunk pairs) code + CPU smoke tests done, Kaggle run pending*
-- [x] Export student → ONNX → INT8; measure size, CPU latency, quality drop — *done on the zero-shot MiniLM; re-run `export_onnx.py` on the trained student*
+- [x] `notebooks/train_retriever.ipynb`: bi-encoder, contrastive loss, **BM25 hard negatives**, chunking for long judgments — *run 1 done on Kaggle 2026-11-22: plain student best at epoch 2 (dev 0.3579 vs 0.3526 zero-shot e5); the distilled student never beat epoch 0 (pretrained e5 kept). Run 2 (selected chunks) dropped, see DECISIONS. Evaluated locally: plain student + BM25 test µF1@K 0.4343 (+1.00 over BM25 + bigrams, p = 0.046; MAP +3.10, p = 0.0001), not significantly above zero-shot e5 + BM25 (p = 0.13)*
+- [ ] Teacher cross-encoder trained/fine-tuned on PCR train pairs; **distil** into the student — *run 1 (random chunk pairs) stayed at chance (train loss 0.695; re-ranking drops test µF1@K 0.4243 → 0.1425), so distillation had nothing to teach. Run 2 (`notebooks/train_teacher_selected.ipynb`, selected chunk pairs): code + CPU smoke tests done, started once (dev pair accuracy 0.679 before the session died), not rerun. Dropped, reported as a negative result + future work*
+- [x] Export student → ONNX → INT8; measure size, CPU latency, quality drop — *done on MiniLM (23.0 MB, cosine 0.993) and on the trained student (34.1 MB, cosine 0.9945, 1.75 s per 26-chunk judgment)*
 - [x] Fusion with BM25 (+ PageRank): RRF and a weighted sum tuned on dev
 **Done when:** ablation table BM25 → + neural → + fusion → + reranker, with size/latency, in `results/`.
 
@@ -74,7 +74,7 @@ Mark items `[x]` when done.
 - [ ] `docs/AI_USE.md` final, `docs/DATA.md` credits final
 - [ ] Clean-folder reproduction test from a fresh clone — *partial run 2026-11-22 on commit 295e7db: setup from README, P1 data stats, P2 indexes + dev tuning + PCR evaluation all byte-identical, pytest 64 passed, frontend builds. Still to repeat at submission: LSI, graphs, neural (after the Kaggle outputs)*
 - [ ] ZIP per `docs/SUBMISSION.md` — *decided 2026-11-22: the IL-TUR files are NOT put in the ZIP; include `scripts/download_data.py`, the split ids and a note on how to get the data*
-- [ ] Demo + viva rehearsal — *NOT DONE YET (2026-11-22): Devansh will rehearse later, including one run with Wi-Fi off*
+- [ ] Demo + viva rehearsal — *NOT DONE YET (2026-11-22): I will rehearse later, including one run with Wi-Fi off*
 **Done when:** ZIP built and checked; demo rehearsed.
 
 ---

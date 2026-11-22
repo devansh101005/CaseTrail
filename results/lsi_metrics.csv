@@ -113,3 +113,29 @@ lsi,knn,test,f1[Section 148],0.3927,13019
 lsi,knn,test,f1[Section 120B],0.3618,13019
 lsi,knn,test,f1[Section 420],0.455,13019
 lsi,knn,test,f1[Section 498A],0.5644,13019
+lsi,neural_attention,dev,macro_f1,0.2897,10181
+lsi,neural_attention,dev,macro_f1_std,0.0005,10181
+lsi,neural_attention,dev,macro_precision,0.2558,10181
+lsi,neural_attention,dev,macro_precision_std,0.0044,10181
+lsi,neural_attention,dev,macro_recall,0.3849,10181
+lsi,neural_attention,dev,macro_recall_std,0.0101,10181
+lsi,neural_attention,dev,micro_f1,0.3774,10181
+lsi,neural_attention,dev,micro_f1_std,0.005,10181
+lsi,neural_attention,dev,micro_precision,0.2955,10181
+lsi,neural_attention,dev,micro_precision_std,0.0095,10181
+lsi,neural_attention,dev,micro_recall,0.5231,10181
+lsi,neural_attention,dev,micro_recall_std,0.0112,10181
+lsi,neural_attention,dev,seeds,3,10181
+lsi,neural_attention,test,macro_f1,0.2714,13019
+lsi,neural_attention,test,macro_f1_std,0.0009,13019
+lsi,neural_attention,test,macro_precision,0.2386,13019
+lsi,neural_attention,test,macro_precision_std,0.0028,13019
+lsi,neural_attention,test,macro_recall,0.3607,13019
+lsi,neural_attention,test,macro_recall_std,0.0064,13019
+lsi,neural_attention,test,micro_f1,0.3612,13019
+lsi,neural_attention,test,micro_f1_std,0.0048,13019
+lsi,neural_attention,test,micro_precision,0.2832,13019
+lsi,neural_attention,test,micro_precision_std,0.0084,13019
+lsi,neural_attention,test,micro_recall,0.4992,13019
+lsi,neural_attention,test,micro_recall_std,0.008,13019
+lsi,neural_attention,test,seeds,3,13019

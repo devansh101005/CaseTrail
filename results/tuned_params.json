@@ -120,7 +120,14 @@
       "fusion_weighted_minilm": 7,
       "dense_minilm_int8": 7,
       "fusion_rrf_minilm_int8": 8,
-      "fusion_weighted_minilm_int8": 7
+      "fusion_weighted_minilm_int8": 7,
+      "bm25_bigram+teacher_rerank": 20,
+      "dense_student_plain": 8,
+      "fusion_rrf_student_plain": 8,
+      "fusion_weighted_student_plain": 7,
+      "dense_student_distilled": 8,
+      "fusion_rrf_student_distilled": 9,
+      "fusion_weighted_student_distilled": 8
     },
     "dense_minilm": {
       "dense": {
@@ -159,6 +166,51 @@
         "dev_micro_f1": 0.4547
       },
       "model": "minilm_int8",
+      "lexical": "bm25_bigram",
+      "tuned_on": "dev"
+    },
+    "teacher_rerank": {
+      "k": 20,
+      "dev_micro_f1": 0.1404,
+      "tuned_on": "dev"
+    },
+    "dense_student_plain": {
+      "dense": {
+        "aggregate": "maxsim",
+        "k": 8,
+        "dev_micro_f1": 0.3579
+      },
+      "rrf": {
+        "rrf_k": 10,
+        "k": 8,
+        "dev_micro_f1": 0.4298
+      },
+      "weighted": {
+        "neural_weight": 0.1,
+        "k": 7,
+        "dev_micro_f1": 0.4591
+      },
+      "model": "student_plain",
+      "lexical": "bm25_bigram",
+      "tuned_on": "dev"
+    },
+    "dense_student_distilled": {
+      "dense": {
+        "aggregate": "maxsim",
+        "k": 8,
+        "dev_micro_f1": 0.3526
+      },
+      "rrf": {
+        "rrf_k": 10,
+        "k": 9,
+        "dev_micro_f1": 0.4314
+      },
+      "weighted": {
+        "neural_weight": 0.2,
+        "k": 8,
+        "dev_micro_f1": 0.458
+      },
+      "model": "student_distilled",
       "lexical": "bm25_bigram",
       "tuned_on": "dev"
     }

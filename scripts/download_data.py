@@ -11,7 +11,7 @@ from huggingface_hub import HfApi, snapshot_download
 
 from casetrail import config
 
-MAX_TOTAL_MB = 1000  # CLAUDE.md rule 7: ask before downloads over ~1 GB
+MAX_TOTAL_MB = 1000  # stop before downloading more than ~1 GB
 
 
 def remote_size_mb(tasks: list) -> float:

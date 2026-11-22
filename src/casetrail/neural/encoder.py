@@ -76,14 +76,15 @@ def mean_pool(token_vectors: torch.Tensor, attention_mask: torch.Tensor) -> torc
 @torch.no_grad()
 def encode_texts(tokenizer, model, texts: list, batch_size: int = 32, prefix: str = "",
                  max_tokens: int = config.CHUNK_TOKENS) -> np.ndarray:
-    """Unit-length float32 vectors, one per text."""
+    """Unit-length float32 vectors, one per text (on whatever device the model sits on)."""
+    device = next(model.parameters()).device
     vectors = []
     for start in range(0, len(texts), batch_size):
         batch = [prefix + text for text in texts[start:start + batch_size]]
-        inputs = tokenizer(batch, padding=True, truncation=True, max_length=max_tokens, return_tensors="pt")
+        inputs = tokenizer(batch, padding=True, truncation=True, max_length=max_tokens, return_tensors="pt").to(device)
         output = model(**inputs).last_hidden_state
         pooled = torch.nn.functional.normalize(mean_pool(output, inputs["attention_mask"]), dim=-1)
-        vectors.append(pooled.numpy().astype(np.float32))
+        vectors.append(pooled.cpu().numpy().astype(np.float32))
     return np.concatenate(vectors) if vectors else np.zeros((0, model.config.hidden_size), dtype=np.float32)
 
 

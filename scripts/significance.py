@@ -36,6 +36,9 @@ PCR_PAIRS = [
     ("fusion_weighted_student_distilled_sel", "bm25_bigram"),
     ("fusion_weighted_student_distilled_sel", "fusion_weighted_student_plain"),
     ("fusion_weighted_student_plain", "bm25_bigram"),
+    ("dense_student_plain", "dense_student_distilled"),                   # did training help? (distilled = zero-shot e5)
+    ("fusion_weighted_student_plain", "fusion_weighted_student_distilled"),
+    ("fusion_weighted_student_plain", "fusion_weighted_minilm"),
 ]
 LSI_PAIRS = [("nb", "rocchio"), ("knn", "nb"), ("knn", "rocchio")]
 

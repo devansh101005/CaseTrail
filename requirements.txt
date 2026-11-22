@@ -17,6 +17,8 @@ torch>=2.6
 transformers>=4.50
 onnx>=1.17
 onnxruntime>=1.20
+# needed by onnx; 0.7.0 is blocked by Windows Smart App Control, 0.5.4 is not
+ml_dtypes==0.5.4
 
 # Demo backend
 fastapi>=0.115
@@ -26,7 +28,7 @@ uvicorn>=0.32
 matplotlib>=3.9
 
 # Tests. The three libraries below are used ONLY in tests/ as reference checks for our own code,
-# never in the pipeline (CLAUDE.md rule 4).
+# never in the pipeline (we write the core IR ourselves).
 pytest>=8.3
 rank_bm25>=0.2.2
 scikit-learn==1.7.2

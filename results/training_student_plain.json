@@ -1,0 +1,41 @@
+{
+  "settings": {
+    "model": "models/hf/intfloat__e5-small-v2",
+    "variant": "plain",
+    "distill": false,
+    "epochs": 3,
+    "batch_size": 8,
+    "hard_negatives": 4,
+    "lr": 2e-05,
+    "distill_weight": 1.0,
+    "max_examples": 0
+  },
+  "device": "cuda",
+  "epochs": [
+    {
+      "epoch": 0,
+      "train_loss": null,
+      "dev_micro_f1": 0.3526343244653104,
+      "dev_k": 8
+    },
+    {
+      "epoch": 1,
+      "train_loss": 2.4843890852158603,
+      "dev_micro_f1": 0.33908387864366446,
+      "dev_k": 6
+    },
+    {
+      "epoch": 2,
+      "train_loss": 2.3202243485961387,
+      "dev_micro_f1": 0.35785080855503393,
+      "dev_k": 8
+    },
+    {
+      "epoch": 3,
+      "train_loss": 2.226615922303581,
+      "dev_micro_f1": 0.35352973874374655,
+      "dev_k": 7
+    }
+  ],
+  "best_epoch": 2
+}

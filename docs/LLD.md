@@ -1,7 +1,7 @@
 # CaseTrail — Low-Level Design (LLD)
 
 Concrete formats, algorithms, defaults and interfaces. Defaults marked *(tune on dev)* are starting values, not final.
-Code style follows `CLAUDE.md` (plain functions/dicts, simple classes, no dataclasses).
+Code style follows our coding rules (plain functions/dicts, simple classes, no dataclasses).
 
 ---
 

@@ -1,7 +1,7 @@
 """Write the PUBLISHED baseline numbers we compare against to results/published_baselines.json.
 
 These are not our results. They are copied from the papers (table and row given for each), so that the README,
-report and frontend read every number from results/ (CLAUDE.md rule 2).
+report and frontend read every number from results/ (no hand-typed numbers).
 IL-TUR's PCR split (827/118/237 queries = 1182) is the IL-PCR corpus of Joshi et al. (2023), Table 13 of IL-TUR.
 """
 import argparse

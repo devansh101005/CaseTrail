@@ -1,6 +1,6 @@
 # Frontend Guide — CaseTrail
 
-The demo frontend copies the **design language of our Waypoint project** (https://waypoint-six-teal.vercel.app/, Devansh's own hackathon app), adapted to legal search.
+The demo frontend copies the **design language of our Waypoint project** (https://waypoint-six-teal.vercel.app/, my own hackathon app), adapted to legal search.
 Waypoint's idea was *"every course is a station, learning is the line between"* (a metro map). CaseTrail's version: **every judgment is a station, and precedent is the trail between them.** The coloured "lines" are our ranking signals.
 
 **The frontend is a display layer only.** It calls the FastAPI backend and shows what it returns. Every number on screen comes from the API or from `results/` — never typed into the code. If a result doesn't exist yet, show `NOT RUN YET`.
@@ -10,7 +10,7 @@ Waypoint's idea was *"every course is a station, learning is the line between"* 
 ## 1. Stack
 - **Next.js (App Router) + TypeScript + Tailwind CSS**, fonts via `next/font/google` (self-hosted at build time, so the demo works **offline**).
 - Small, typed components in `frontend/components/`. API calls in `frontend/lib/api.ts` only.
-- Charts: plain hand-written SVG components. No UI kits or chart libraries unless we explicitly agree (see the coding rules in `CLAUDE.md`).
+- Charts: plain hand-written SVG components. No UI kits or chart libraries unless we explicitly agree (see our coding rules).
 - Backend URL from `NEXT_PUBLIC_API_URL` (default `http://127.0.0.1:8000`).
 
 ## 2. Design tokens (measured from Waypoint)

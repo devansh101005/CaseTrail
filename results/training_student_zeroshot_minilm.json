@@ -1,0 +1,23 @@
+{
+  "settings": {
+    "model": "models/hf/sentence-transformers__all-MiniLM-L6-v2",
+    "variant": "zeroshot_minilm",
+    "distill": false,
+    "epochs": 0,
+    "batch_size": 16,
+    "hard_negatives": 4,
+    "lr": 2e-05,
+    "distill_weight": 1.0,
+    "max_examples": 0
+  },
+  "device": "cuda",
+  "epochs": [
+    {
+      "epoch": 0,
+      "train_loss": null,
+      "dev_micro_f1": 0.33574207893274044,
+      "dev_k": 7
+    }
+  ],
+  "best_epoch": 0
+}

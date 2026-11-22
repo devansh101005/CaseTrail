@@ -54,7 +54,7 @@ ONLINE (one query judgment)
 - **HITS** on the bipartite judgment–statute graph → statute authority, judgment hub scores; used as features.
 - **Statute classifiers:** multinomial **Naive Bayes**, **Rocchio**, **kNN** (one-vs-rest, threshold tuned on dev).
 
-### 4.2 Neural (Devansh's strength — trained by us)
+### 4.2 Neural (trained by us)
 1. **Bi-encoder retriever (student):** small encoder (e.g. MiniLM / e5-small / a legal BERT), trained contrastively on PCR train pairs with **BM25-mined hard negatives**.
 2. **Cross-encoder teacher → student distillation:** teacher scores (query, candidate) pairs; the student learns the teacher's scores (margin-MSE or KL). Export student to **INT8 ONNX**; report size and CPU latency.
 3. **Statute cross-attention classifier:** each of the 100 statute descriptions attends over the case's chunk embeddings (multi-head cross-attention, masked pooling) → multi-label logits. Compared with NB / Rocchio / kNN and LeSICiN.

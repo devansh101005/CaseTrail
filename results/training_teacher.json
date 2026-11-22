@@ -1,0 +1,17 @@
+{
+  "settings": {
+    "model": "BAAI/bge-reranker-base",
+    "epochs": 1,
+    "batch_size": 2,
+    "lr": 2e-05,
+    "max_examples": 0,
+    "rerank_depth": 50
+  },
+  "device": "cuda",
+  "epochs": [
+    {
+      "epoch": 1,
+      "train_loss": 0.6950281270052258
+    }
+  ]
+}
