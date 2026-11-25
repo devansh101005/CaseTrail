@@ -1,8 +1,8 @@
-// Team page. The work division is written by the team at the end of the project (PLAN.md section 7).
+// Team page: names, roll numbers, areas and data credit.
 const TEAM = [
-  { name: "Devansh Pandey", roll: "2310110461" },
-  { name: "Anamika Pal", roll: "2310110037" },
-  { name: "Abhinav Bachchas", roll: "2310110383" },
+  { name: "Devansh Pandey", roll: "2310110461", area: "Neural and system", topics: "e5 student, MaxSim, distillation, cross-attention, INT8, fusion, API and website" },
+  { name: "Anamika Pal", roll: "2310110037", area: "Retrieval", topics: "Data cleaning, citation leak, inverted index, BM25, tf-idf and bigrams" },
+  { name: "Abhinav Bachchas", roll: "2310110383", area: "Graphs and statutes", topics: "PageRank, HITS, Naive Bayes, Rocchio, kNN and thresholds" },
 ];
 
 export default function Team() {
@@ -15,7 +15,8 @@ export default function Team() {
           <article key={member.roll} className="border-b border-hairline p-6 md:border-r md:last:border-r-0">
             <h2 className="display text-[22px]">{member.name}</h2>
             <p className="mono-label mt-2 text-ink-soft">Roll no. {member.roll}</p>
-            <p className="mt-4 text-sm text-ink-soft">Contribution: to be written by the team.</p>
+            <p className="mono-label mt-4 text-line-red-ink">Area: {member.area}</p>
+            <p className="mt-2 text-sm text-ink-soft">{member.topics}</p>
           </article>
         ))}
       </div>

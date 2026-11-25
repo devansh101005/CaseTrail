@@ -16,17 +16,17 @@ function tiles(results: ResultsPayload): Tile[] {
     .filter((x) => x.v !== null)
     .sort((a, b) => (b.v ?? 0) - (a.v ?? 0))[0];
   const efficiency = results.efficiency ?? [];
-  const int8 = efficiency.find((r) => r.system.endsWith("_onnx_int8") && r.metric === "size_mb");
-  const latency = efficiency.find((r) => r.system.endsWith("_onnx_int8") && r.metric === "query_encode_median_ms");
+  const int8 = efficiency.find((r) => r.system === "student_plain_onnx_int8" && r.metric === "size_mb");
+  const latency = efficiency.find((r) => r.system === "student_plain_onnx_int8" && r.metric === "query_encode_median_ms");
   return [
     { label: "Micro-F1@K (ours, BM25 + bigrams)", value: percent(metricValue(results.pcr_metrics, "bm25_bigram", "test", "micro_f1@k")),
       compare: sota ? `published SOTA: ${sota.value_percent}` : "baseline: not loaded", colour: "text-red-on-ink" },
     { label: `Macro-F1 (statutes, ${lsiBest?.m ?? "—"})`,
       value: lsiBest ? percent(metricValue(results.lsi_metrics, lsiBest.m, "test", "macro_f1")) : "NOT RUN YET",
       compare: lesicin ? `LeSICiN: ${lesicin.value_percent}` : "baseline: not loaded", colour: "text-line-amber" },
-    { label: "Student model (INT8)", value: int8 ? `${Number(int8.value).toFixed(0)} MB` : "NOT RUN YET",
+    { label: "Trained student (INT8 export)", value: int8 ? `${Number(int8.value).toFixed(1)} MB` : "NOT RUN YET",
       compare: "ONNX Runtime, dynamic quantisation", colour: "text-on-ink" },
-    { label: "Neural query encode (CPU)", value: latency ? `${Number(latency.value).toFixed(0)} MS` : "NOT RUN YET",
+    { label: "Student INT8 query encode (CPU)", value: latency ? `${Number(latency.value).toFixed(0)} MS` : "NOT RUN YET",
       compare: "median, one judgment", colour: "text-on-ink" },
   ];
 }

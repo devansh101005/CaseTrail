@@ -9,7 +9,7 @@ const STEPS = [
   { title: "Link analysis", file: "src/casetrail/graph/", colour: "border-line-green",
     text: "PageRank (power iteration, damping, dangling nodes) on a citation graph built from training labels and on a BM25 similarity graph; HITS on judgment–section graphs and per query." },
   { title: "Neural retriever", file: "src/casetrail/neural/", colour: "border-line-blue",
-    text: "Chunked bi-encoder with MaxSim scoring, trained on Kaggle with BM25 hard negatives and distilled from a cross-encoder, exported to INT8 ONNX." },
+    text: "Chunked bi-encoder with MaxSim scoring, trained on Kaggle with BM25 hard negatives. Cross-encoder distillation was tested but did not help. An INT8 ONNX version was exported and measured; the demo runs the full-precision model." },
   { title: "Fusion", file: "src/casetrail/fusion/combine.py", colour: "border-line-blue",
     text: "Reciprocal rank fusion and a weighted sum of normalised scores; the weight is chosen on dev." },
   { title: "Statute classifiers", file: "src/casetrail/classify/", colour: "border-line-amber",
